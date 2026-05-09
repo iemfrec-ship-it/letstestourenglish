@@ -40,33 +40,131 @@
   /* ===== HOME ===== */
   #page-home {
     min-height: 100vh;
-    background: linear-gradient(160deg, #1565a8 0%, #1e7ec8 40%, #3b9fe0 70%, #90c8f3 100%);
+    background: linear-gradient(145deg, #3dbfb8 0%, #2aa9a2 30%, #1d9090 60%, #16787a 100%);
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: 2rem;
+    padding: 2rem; position: relative; overflow: hidden;
+  }
+  #page-home::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(255,255,255,0.12) 0%, transparent 45%),
+      radial-gradient(circle at 85% 75%, rgba(255,255,255,0.08) 0%, transparent 40%),
+      radial-gradient(circle at 50% 90%, rgba(22,120,122,0.4) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .home-bubbles { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  .home-bubbles span {
+    position: absolute; border-radius: 50%;
+    background: rgba(255,255,255,0.07);
+    animation: floatBubble linear infinite;
+  }
+  @keyframes floatBubble {
+    0% { transform: translateY(110vh) scale(0.8); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 0.6; }
+    100% { transform: translateY(-10vh) scale(1.1); opacity: 0; }
   }
   .home-card {
-    background: rgba(255,255,255,0.15); backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.3);
-    border-radius: 24px; padding: 3rem 2.5rem; text-align: center;
-    max-width: 480px; width: 100%;
+    background: rgba(180,230,240,0.22);
+    backdrop-filter: blur(16px);
+    border: 1.5px solid rgba(255,255,255,0.45);
+    border-radius: 28px; padding: 3rem 2.5rem; text-align: center;
+    max-width: 460px; width: 100%; position: relative; z-index: 1;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.3);
   }
-  .home-title { font-family: 'Poppins', sans-serif; font-size: 2.2rem; font-weight: 700; color: #fff; line-height: 1.2; margin-bottom: 0.5rem; }
-  .home-subtitle { color: rgba(255,255,255,0.8); font-size: 1rem; margin-bottom: 2.5rem; }
-  .home-btn-group { display: flex; flex-direction: column; gap: 1rem; }
+  .home-title { font-family: 'Poppins', sans-serif; font-size: 2.4rem; font-weight: 700; color: #fff; line-height: 1.15; margin-bottom: 0.4rem; text-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+  .home-subtitle { color: rgba(255,255,255,0.85); font-size: 0.95rem; margin-bottom: 2.2rem; font-weight: 600; letter-spacing: 0.03em; }
+  .home-divider { border: none; border-top: 1px solid rgba(255,255,255,0.25); margin: 0 0 2rem; }
+  .home-btn-group { display: flex; flex-direction: column; gap: 0.9rem; }
   .btn-home {
-    padding: 1rem 2rem; border-radius: var(--radius); border: none; cursor: pointer;
-    font-family: 'Nunito', sans-serif; font-size: 1.05rem; font-weight: 700;
-    transition: transform 0.15s, box-shadow 0.15s;
+    padding: 1rem 2rem; border-radius: 14px; border: none; cursor: pointer;
+    font-family: 'Nunito', sans-serif; font-size: 1.05rem; font-weight: 800;
+    transition: transform 0.18s, box-shadow 0.18s;
+    display: flex; align-items: center; justify-content: center; gap: 0.6rem;
   }
-  .btn-home:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.2); }
-  .btn-home.primary { background: #fff; color: var(--blue-600); }
-  .btn-home.secondary { background: rgba(255,255,255,0.2); color: #fff; border: 2px solid rgba(255,255,255,0.5); }
-  .home-footer { position: fixed; bottom: 1rem; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.7); font-size: 0.85rem; white-space: nowrap; }
-  .flag { font-size: 1.8rem; margin-bottom: 1rem; }
+  .btn-home:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+  .btn-home:active { transform: translateY(-1px); }
+  .btn-home.primary { background: #fff; color: #1d9090; box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+  .btn-home.secondary { background: rgba(255,255,255,0.18); color: #fff; border: 2px solid rgba(255,255,255,0.55); }
+  .home-footer { position: fixed; bottom: 1rem; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.6); font-size: 0.82rem; white-space: nowrap; z-index:1; }
+  .flag { font-size: 2.2rem; margin-bottom: 1rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
 
   /* ===== GENERIC ===== */
   .page { display: none; min-height: 100vh; background: var(--gray-50); }
   .page.active { display: block; }
+
+  /* ===== STUDENT PAGE OVERRIDES ===== */
+  #page-student { background: linear-gradient(180deg, #e0f7f6 0%, #f0fafa 60%, #f8f9fa 100%); }
+  #page-student .topbar { background: linear-gradient(90deg, #1d9090 0%, #2aa9a2 100%); }
+  #page-student .tabs { background: #fff; border-bottom: 3px solid #b2e8e6; }
+  #page-student .tab { font-size: 0.88rem; font-weight: 700; padding: 0.85rem 1.1rem; }
+  #page-student .tab.active { color: #1d9090; border-bottom-color: #1d9090; }
+  #page-student .tab:hover { color: #2aa9a2; }
+
+  /* Student exercise cards */
+  #page-student .section-card {
+    border-radius: 16px;
+    border: 2px solid #b2e8e6;
+    box-shadow: 0 4px 20px rgba(29,144,144,0.08);
+    transition: box-shadow 0.2s;
+  }
+  #page-student .section-card:hover { box-shadow: 0 6px 28px rgba(29,144,144,0.13); }
+  #page-student .section-header { background: linear-gradient(90deg, #e0f7f6 0%, #f0fafa 100%); border-bottom: 2px solid #b2e8e6; }
+  #page-student .section-title { color: #1d9090; font-size: 1.05rem; }
+
+  /* Student QCM options — playful */
+  #page-student .qcm-option {
+    border: 2px solid #b2e8e6;
+    border-radius: 12px;
+    padding: 0.75rem 1.1rem;
+    font-weight: 600;
+    transition: all 0.18s;
+    background: #fff;
+  }
+  #page-student .qcm-option:hover { border-color: #2aa9a2; background: #e0f7f6; transform: translateX(4px); }
+  #page-student .qcm-option.selected { border-color: #1d9090; background: #e0f7f6; }
+  #page-student .qcm-option.correct { border-color: #28a745; background: #d4f5dc; }
+  #page-student .qcm-option.wrong { border-color: var(--red-500); background: var(--red-100); }
+  #page-student .qcm-radio { border-color: #b2e8e6; }
+  #page-student .qcm-option.selected .qcm-radio { background: #1d9090; border-color: #1d9090; }
+  #page-student .qcm-option.correct .qcm-radio { background: #28a745; border-color: #28a745; }
+
+  /* Student validate button */
+  #page-student .btn-primary { background: linear-gradient(90deg, #1d9090 0%, #2aa9a2 100%); border-radius: 12px; font-weight: 800; letter-spacing: 0.02em; padding: 0.65rem 1.4rem; box-shadow: 0 3px 12px rgba(29,144,144,0.25); }
+  #page-student .btn-primary:hover { background: linear-gradient(90deg, #16787a 0%, #1d9090 100%); transform: translateY(-1px); box-shadow: 0 5px 18px rgba(29,144,144,0.3); }
+
+  /* Score display student */
+  #page-student .score-display { background: linear-gradient(90deg, #e0f7f6 0%, #f0fafa 100%); border: 2px solid #b2e8e6; border-radius: 14px; }
+  #page-student .score-big { color: #1d9090; }
+
+  /* Text passage student */
+  #page-student .text-passage { border: 2px solid #b2e8e6; border-radius: 12px; background: #f5fefe; }
+
+  /* Fill input student */
+  #page-student .fill-input { border-bottom-color: #2aa9a2; }
+  #page-student .fill-input:focus { border-bottom-color: #1d9090; }
+
+  /* Submitted tag student */
+  #page-student .submitted-tag { background: #d4f5dc; color: #1e7e34; font-size: 0.85rem; padding: 0.4rem 1rem; }
+
+  /* Progress banner in student page */
+  .student-progress-banner {
+    background: linear-gradient(90deg, #1d9090, #2aa9a2);
+    color: #fff; padding: 0.7rem 1.5rem;
+    display: flex; align-items: center; gap: 1rem; font-size: 0.88rem; font-weight: 700;
+    flex-wrap: wrap;
+  }
+  .student-progress-bar { flex: 1; min-width: 120px; background: rgba(255,255,255,0.3); border-radius: 99px; height: 8px; overflow: hidden; }
+  .student-progress-fill { height: 100%; background: #fff; border-radius: 99px; transition: width 0.4s; }
+
+  /* Empty state student */
+  #page-student .empty-state { background: #f5fefe; border-radius: 16px; border: 2px dashed #b2e8e6; }
+
+  /* Confetti animation on submit */
+  @keyframes popIn { 0%{transform:scale(0.7);opacity:0} 60%{transform:scale(1.12)} 100%{transform:scale(1);opacity:1} }
+  .pop-in { animation: popIn 0.35s ease forwards; }
+
   .topbar {
     background: var(--blue-600); color: #fff; padding: 0.9rem 1.5rem;
     display: flex; align-items: center; justify-content: space-between;
@@ -262,10 +360,6 @@
       <input id="sl-code" class="form-input" type="password" placeholder="Entrez le code donné par votre prof">
     </div>
     <div class="form-group">
-      <label class="form-label">Classe</label>
-      <input id="sl-class" class="form-input" type="text" placeholder="Ex: 2nde A">
-    </div>
-    <div class="form-group">
       <label class="form-label">Filière</label>
       <input id="sl-track" class="form-input" type="text" placeholder="Ex : AEPA, MRC...">
     </div>
@@ -425,18 +519,17 @@ function closeModal(id) {
 
 function doStudentLogin() {
   const code = document.getElementById('sl-code').value.trim();
-  const cls = document.getElementById('sl-class').value.trim();
-  const track = document.getElementById('sl-track').value;
+  const track = document.getElementById('sl-track').value.trim();
   const name = document.getElementById('sl-firstname').value.trim();
   const init = document.getElementById('sl-initial').value.trim().toUpperCase();
   const db = getDB();
   const err = document.getElementById('student-login-error');
   if(code !== db.studentCode) { err.textContent='Code incorrect.'; err.style.display='block'; return; }
-  if(!cls||!track||!name||!init) { err.textContent='Tous les champs sont obligatoires.'; err.style.display='block'; return; }
+  if(!track||!name||!init) { err.textContent='Tous les champs sont obligatoires.'; err.style.display='block'; return; }
   err.style.display='none';
-  currentStudent = { cls, track, name, init, id: cls+'_'+name+'_'+init };
+  currentStudent = { cls: track, track, name, init, id: track+'_'+name+'_'+init };
   closeModal('modal-student');
-  document.getElementById('student-greeting').textContent = name+' '+init+'. – '+cls;
+  document.getElementById('student-greeting').textContent = name+' '+init+'. – '+track;
   showPage('page-student');
   renderStudentTabs();
 }
