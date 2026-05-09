@@ -267,7 +267,7 @@
     </div>
     <div class="form-group">
       <label class="form-label">Filière</label>
-      <input id="sl-track" class="form-input" type="text" placeholder="Ex: Sciences, STMG, Bac Pro...">
+      <input id="sl-track" class="form-input" type="text" placeholder="Ex : AEPA, MRC...">
     </div>
     <div class="form-group">
       <label class="form-label">Prénom</label>
@@ -291,7 +291,7 @@
     <div id="teacher-login-error" class="alert alert-danger" style="display:none;"></div>
     <div class="form-group">
       <label class="form-label">Mot de passe professeur</label>
-      <input id="tl-password" class="form-input" type="password" placeholder="Mot de passe">
+      <input id="tl-password" class="form-input" type="password" placeholder="Mot de passe" autocomplete="off">
     </div>
     <div class="flex-row" style="margin-top:1.5rem;">
       <button class="btn btn-primary" onclick="doTeacherLogin()" style="flex:1">Accéder →</button>
@@ -354,10 +354,10 @@
 </div>
 
 <!-- ===== ADD ACTIVITY MODAL ===== -->
-<div id="modal-add-activity" class="modal-overlay" style="display:none;">
-  <div class="modal" style="max-width:600px;">
-    <h2 id="add-modal-title">Ajouter une activité</h2>
-    <div id="add-modal-body"></div>
+<div id="modal-add-activity" class="modal-overlay" style="display:none;align-items:flex-start;padding-top:2rem;">
+  <div class="modal" style="max-width:640px;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;">
+    <h2 id="add-modal-title" style="flex-shrink:0;">Ajouter une activité</h2>
+    <div id="add-modal-body" style="overflow-y:auto;flex:1;padding-right:4px;"></div>
   </div>
 </div>
 
@@ -408,8 +408,20 @@ let currentStudent = null;
 let currentTeacher = false;
 
 function showStudentLogin() { document.getElementById('modal-student').style.display='flex'; }
-function showTeacherLogin() { document.getElementById('modal-teacher').style.display='flex'; }
-function closeModal(id) { document.getElementById(id).style.display='none'; }
+function showTeacherLogin() {
+  const inp = document.getElementById('tl-password');
+  inp.value = '';
+  document.getElementById('teacher-login-error').style.display='none';
+  document.getElementById('modal-teacher').style.display='flex';
+  setTimeout(()=>inp.focus(), 100);
+}
+function closeModal(id) {
+  document.getElementById(id).style.display='none';
+  if(id==='modal-add-activity') {
+    const f = document.getElementById('add-modal-footer');
+    if(f) f.remove();
+  }
+}
 
 function doStudentLogin() {
   const code = document.getElementById('sl-code').value.trim();
@@ -718,88 +730,148 @@ function renderTeacherResults() {
   const db = getDB();
   const el = document.getElementById('t-results');
   const results = db.results||[];
-  // Group by student
+
+  // Build flat list of all activities with cat+idx
+  const allActs = [];
+  Object.keys(CATS).forEach(cat=>{
+    (db.activities[cat]||[]).forEach((a,i)=>allActs.push({cat,idx:i,act:a}));
+  });
+  const totalActs = allActs.length;
+
+  // Group results by student
   const students = {};
   results.forEach(r=>{
     if(!students[r.studentId]) students[r.studentId]={ id:r.studentId, name:r.studentName, init:r.studentInit, cls:r.studentClass, track:r.studentTrack, results:[] };
     students[r.studentId].results.push(r);
   });
   const list = Object.values(students);
-  const totalActs = Object.values(db.activities).reduce((a,b)=>a+b.length,0);
 
   let html = `<div class="stats-grid">
     <div class="stat-card"><div class="stat-num">${list.length}</div><div class="stat-label">Élèves</div></div>
-    <div class="stat-card"><div class="stat-num">${totalActs}</div><div class="stat-label">Exercices créés</div></div>
+    <div class="stat-card"><div class="stat-num">${totalActs}</div><div class="stat-label">Exercices</div></div>
     <div class="stat-card"><div class="stat-num">${results.filter(r=>r.submitted).length}</div><div class="stat-label">Soumissions</div></div>
   </div>`;
 
   if(list.length===0) {
     html += `<div class="empty-state"><div class="empty-icon">📊</div><p>Aucun résultat élève pour l'instant.</p></div>`;
-  } else {
-    const classes = [...new Set(list.map(s=>s.cls))].sort();
-    const tracks = [...new Set(list.map(s=>s.track).filter(Boolean))].sort();
-    // Read current filter values (preserve across re-renders via hidden inputs trick)
-    const prevCls = (document.getElementById('filter-class')||{}).value||'';
-    const prevTrack = (document.getElementById('filter-track')||{}).value||'';
+    if(totalActs===0) html += `<div class="alert alert-info" style="max-width:500px;margin:0 auto">Commencez par créer des exercices dans les onglets de catégorie.</div>`;
+    el.innerHTML = html;
+    return;
+  }
 
-    html += `<div class="section-card"><div class="section-header"><div class="section-title">📋 Liste des élèves</div>
+  const classes = [...new Set(list.map(s=>s.cls))].sort();
+  const tracks = [...new Set(list.map(s=>s.track).filter(Boolean))].sort();
+  const prevCls = (document.getElementById('filter-class')||{}).value||'';
+  const prevTrack = (document.getElementById('filter-track')||{}).value||'';
+
+  html += `<div class="section-card" style="overflow-x:auto;">
+    <div class="section-header" style="flex-wrap:wrap;gap:0.5rem;">
+      <div class="section-title">📋 Résultats par élève</div>
       <div class="flex-row">
-        <select class="form-select" style="max-width:160px;padding:0.4rem 0.7rem;" id="filter-class" onchange="renderTeacherResults()">
+        <select class="form-select" style="max-width:155px;padding:0.4rem 0.6rem;font-size:0.85rem" id="filter-class" onchange="renderTeacherResults()">
           <option value="">Toutes les classes</option>
           ${classes.map(c=>`<option value="${c}"${c===prevCls?' selected':''}>${c}</option>`).join('')}
         </select>
-        <select class="form-select" style="max-width:170px;padding:0.4rem 0.7rem;" id="filter-track" onchange="renderTeacherResults()">
+        <select class="form-select" style="max-width:165px;padding:0.4rem 0.6rem;font-size:0.85rem" id="filter-track" onchange="renderTeacherResults()">
           <option value="">Toutes les filières</option>
           ${tracks.map(t=>`<option value="${t}"${t===prevTrack?' selected':''}>${t}</option>`).join('')}
         </select>
       </div>
     </div>`;
 
-    let filtered = list;
-    if(prevCls) filtered = filtered.filter(s=>s.cls===prevCls);
-    if(prevTrack) filtered = filtered.filter(s=>(s.track||'')===prevTrack);
-    filtered.sort((a,b)=>{ const tc=(a.track||'').localeCompare(b.track||''); return tc!==0?tc:a.cls.localeCompare(b.cls)||a.name.localeCompare(b.name); });
+  let filtered = list;
+  if(prevCls) filtered = filtered.filter(s=>s.cls===prevCls);
+  if(prevTrack) filtered = filtered.filter(s=>(s.track||'')===prevTrack);
+  filtered.sort((a,b)=>{ const tc=(a.track||'').localeCompare(b.track||''); return tc!==0?tc:a.cls.localeCompare(b.cls)||a.name.localeCompare(b.name); });
 
-    if(filtered.length===0) {
-      html += `<div style="padding:2rem;text-align:center;color:var(--gray-500)">Aucun élève pour cette sélection.</div>`;
-    } else {
-      // Group by track then class
-      const grouped = {};
-      filtered.forEach(s=>{
-        const key = (s.track||'—')+'|||'+(s.cls||'—');
-        if(!grouped[key]) grouped[key]=[];
-        grouped[key].push(s);
-      });
-      Object.entries(grouped).sort(([a],[b])=>a.localeCompare(b)).forEach(([key, students])=>{
-        const [track, cls] = key.split('|||');
-        html += `<div style="padding:0.6rem 1.2rem;background:var(--blue-50);border-top:1px solid var(--blue-100);font-size:0.82rem;font-weight:700;color:var(--blue-700)">
-          📁 ${track} — ${cls} <span style="font-weight:400;color:var(--blue-500)">(${students.length} élève${students.length>1?'s':''})</span></div>`;
-        students.forEach(s=>{
-          const submitted = s.results.filter(r=>r.submitted).length;
-          const pct = totalActs>0?Math.round(submitted/totalActs*100):0;
-          const avg = computeStudentAvg(db, s);
-          html += `<div class="student-row" onclick="showStudentDetail('${escHtml(s.id)}')">
-            <div class="student-avatar">${(s.name||'?')[0]}${s.init||''}</div>
-            <div class="student-info">
-              <div class="student-name">${s.name} ${s.init}.</div>
-              <div class="student-meta">${s.cls} · <span style="color:var(--blue-500)">${s.track||'—'}</span></div>
-            </div>
-            <div style="text-align:center">
-              <div style="font-size:0.78rem;color:var(--gray-500);margin-bottom:3px">Complété</div>
-              <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
-              <div style="font-size:0.78rem;color:var(--gray-500);margin-top:2px">${submitted}/${totalActs}</div>
-            </div>
-            <div style="text-align:center">
-              <div style="font-size:0.78rem;color:var(--gray-500);margin-bottom:4px">Score moy.</div>
-              ${avg!==null?`<span class="badge ${avg>=70?'badge-green':avg>=40?'badge-blue':'badge-red'}">${avg}%</span>`:'<span class="badge badge-gray">—</span>'}
-            </div>
-            <span style="color:var(--blue-400);font-size:1.2rem">›</span>
-          </div>`;
-        });
-      });
-    }
-    html += '</div>';
+  if(filtered.length===0) {
+    html += `<div style="padding:2rem;text-align:center;color:var(--gray-500)">Aucun élève pour cette sélection.</div></div>`;
+    el.innerHTML = html;
+    return;
   }
+
+  // Build table header with all exercises
+  html += `<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:0.82rem;min-width:600px">
+    <thead><tr style="background:var(--blue-50);">
+      <th style="padding:0.6rem 0.8rem;text-align:left;border-bottom:2px solid var(--blue-100);white-space:nowrap;min-width:160px">Élève</th>
+      <th style="padding:0.6rem 0.5rem;text-align:center;border-bottom:2px solid var(--blue-100);white-space:nowrap">Progression</th>
+      <th style="padding:0.6rem 0.5rem;text-align:center;border-bottom:2px solid var(--blue-100);white-space:nowrap">Score moy.</th>`;
+  allActs.forEach(({cat,idx,act})=>{
+    html += `<th style="padding:0.5rem 0.4rem;text-align:center;border-bottom:2px solid var(--blue-100);min-width:80px;font-size:0.75rem;color:var(--blue-700)">
+      <div style="font-size:0.9rem">${CATS[cat].icon}</div>
+      <div style="max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escHtml(act.title||'Ex.'+(idx+1))}">${escHtml((act.title||'Ex.'+(idx+1)).substring(0,12))}${(act.title||'').length>12?'…':''}</div>
+    </th>`;
+  });
+  html += `<th style="padding:0.5rem;border-bottom:2px solid var(--blue-100);"></th></tr></thead><tbody>`;
+
+  // Group by filière+class
+  const grouped = {};
+  filtered.forEach(s=>{
+    const key=(s.track||'—')+'|||'+(s.cls||'—');
+    if(!grouped[key]) grouped[key]=[];
+    grouped[key].push(s);
+  });
+
+  Object.entries(grouped).sort(([a],[b])=>a.localeCompare(b)).forEach(([key,students])=>{
+    const [track,cls]=key.split('|||');
+    const colspan = 3 + allActs.length + 1;
+    html += `<tr><td colspan="${colspan}" style="background:var(--blue-50);padding:0.45rem 0.8rem;font-size:0.8rem;font-weight:700;color:var(--blue-700)">
+      📁 ${track} — ${cls} <span style="font-weight:400;color:var(--blue-500)">(${students.length} élève${students.length>1?'s':''})</span></td></tr>`;
+
+    students.forEach(s=>{
+      const submitted = s.results.filter(r=>r.submitted).length;
+      const pct = totalActs>0?Math.round(submitted/totalActs*100):0;
+      const avg = computeStudentAvg(db,s);
+      html += `<tr style="border-bottom:1px solid var(--gray-100);" onmouseover="this.style.background='var(--blue-50)'" onmouseout="this.style.background=''">
+        <td style="padding:0.55rem 0.8rem;">
+          <div style="display:flex;align-items:center;gap:0.5rem">
+            <div style="width:30px;height:30px;border-radius:50%;background:var(--blue-100);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:800;color:var(--blue-700);flex-shrink:0">${(s.name||'?')[0]}${s.init||''}</div>
+            <div><div style="font-weight:700;font-size:0.88rem">${s.name} ${s.init}.</div><div style="font-size:0.75rem;color:var(--gray-500)">${s.cls}</div></div>
+          </div>
+        </td>
+        <td style="padding:0.55rem 0.5rem;text-align:center;">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
+            <div style="width:70px;background:var(--gray-100);border-radius:99px;height:6px;overflow:hidden"><div style="height:100%;border-radius:99px;background:var(--blue-400);width:${pct}%"></div></div>
+            <div style="font-size:0.75rem;color:var(--gray-500)">${submitted}/${totalActs}</div>
+          </div>
+        </td>
+        <td style="padding:0.55rem 0.5rem;text-align:center;">
+          ${avg!==null?`<span class="badge ${avg>=70?'badge-green':avg>=40?'badge-blue':'badge-red'}">${avg}%</span>`:'<span class="badge badge-gray">—</span>'}
+        </td>`;
+
+      // One cell per exercise
+      allActs.forEach(({cat,idx,act})=>{
+        const res = s.results.find(r=>r.cat===cat&&r.actIdx===idx&&r.submitted);
+        if(!res) {
+          html += `<td style="padding:0.55rem 0.4rem;text-align:center;"><span style="color:var(--gray-400);font-size:1rem">·</span></td>`;
+          return;
+        }
+        if(act.type==='writing') {
+          html += `<td style="padding:0.55rem 0.4rem;text-align:center;" title="Expression libre"><span style="font-size:0.85rem">✍️</span></td>`;
+          return;
+        }
+        let got=0,total=0;
+        if(act.type==='qcm'||act.type==='reading_qcm'||act.type==='listening_qcm') {
+          const sc=computeQcmScore(act,res.answers); got=sc.got; total=sc.total;
+        } else if(act.type==='fill') {
+          total=act.questions.length;
+          got=act.questions.filter((q,qi)=>(res.answers[qi]||'').trim().toLowerCase()===q.answer.trim().toLowerCase()).length;
+        }
+        const p=total>0?Math.round(got/total*100):0;
+        const col=p>=70?'var(--green-600)':p>=40?'#856404':'var(--red-500)';
+        const bg=p>=70?'var(--green-100)':p>=40?'var(--amber-100)':'var(--red-100)';
+        html += `<td style="padding:0.55rem 0.4rem;text-align:center;" title="${got}/${total}">
+          <span style="font-size:0.78rem;font-weight:700;background:${bg};color:${col};padding:2px 5px;border-radius:99px">${p}%</span>
+        </td>`;
+      });
+
+      html += `<td style="padding:0.55rem 0.5rem;text-align:center;">
+        <button class="btn btn-sm btn-white" style="font-size:0.78rem;padding:0.2rem 0.6rem" onclick="showStudentDetail('${escHtml(s.id)}')">Détail ›</button>
+      </td></tr>`;
+    });
+  });
+
+  html += `</tbody></table></div></div>`;
   el.innerHTML = html;
 }
 
@@ -900,13 +972,27 @@ function renderTeacherCat(cat) {
     </div>`;
   });
   html += `<div class="section-card" style="padding:1.5rem">
-    <div class="flex-row">
-      <button class="add-btn" style="flex:1" onclick="openAddActivity('${cat}')">+ Créer un exercice</button>
-      <button class="add-btn" style="flex:1;border-color:var(--green-500);color:var(--green-600);background:var(--green-100)" onclick="openImportJson('${cat}')">📥 Importer JSON (Claude)</button>
+    <div style="font-family:'Poppins',sans-serif;font-size:0.9rem;font-weight:600;color:var(--blue-600);margin-bottom:1rem">➕ Ajouter un exercice</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1rem">
+      <button class="add-btn" onclick="openAddActivity('${cat}')">🛠 Créer manuellement</button>
+      <button class="add-btn" style="border-color:var(--green-500);color:var(--green-600);background:var(--green-100)" onclick="openImportJson('${cat}')">📥 Coller le JSON (Claude)</button>
     </div>
-    <details style="margin-top:1rem">
-      <summary style="cursor:pointer;font-size:0.85rem;color:var(--blue-500);font-weight:600">Voir le format JSON attendu pour cette catégorie</summary>
-      <pre style="margin-top:0.75rem">${escHtml(getJsonTemplate(cat))}</pre>
+    <details style="border:1px solid var(--blue-100);border-radius:var(--radius-sm);overflow:hidden">
+      <summary style="cursor:pointer;font-size:0.85rem;color:var(--blue-500);font-weight:600;padding:0.7rem 1rem;background:var(--blue-50);list-style:none;display:flex;justify-content:space-between;align-items:center">
+        💡 Comment générer un exercice avec Claude ? <span style="font-size:0.8rem">▼</span>
+      </summary>
+      <div style="padding:1rem">
+        <p style="font-size:0.85rem;color:var(--gray-700);margin-bottom:0.75rem">Copiez ce prompt et collez-le dans une conversation Claude. Remplacez les <em>[crochets]</em> selon vos besoins :</p>
+        <div style="position:relative">
+          <textarea readonly class="form-textarea" style="font-family:monospace;font-size:0.78rem;background:#f8f9fa;color:var(--gray-700);resize:none;height:auto" rows="10" id="claude-prompt-${cat}">${escHtml(getClaudePrompt(cat))}</textarea>
+          <button class="btn btn-sm" style="position:absolute;top:6px;right:6px;background:var(--blue-500);color:#fff" onclick="copyClaudePrompt('${cat}')">📋 Copier</button>
+        </div>
+        <p style="font-size:0.78rem;color:var(--gray-500);margin-top:0.5rem">→ Demandez à Claude de générer le JSON, puis copiez-le et utilisez le bouton <strong>Coller le JSON</strong> ci-dessus.</p>
+        <details style="margin-top:0.75rem">
+          <summary style="font-size:0.82rem;color:var(--blue-400);cursor:pointer">Voir la structure JSON attendue</summary>
+          <pre style="margin-top:0.5rem;font-size:0.78rem">${escHtml(getJsonTemplate(cat))}</pre>
+        </details>
+      </div>
     </details>
   </div>`;
   el.innerHTML = html;
@@ -1091,12 +1177,17 @@ function renderAddModal(cat, act) {
       ${typeOpts.map(t=>`<option value="${t.v}"${selType===t.v?' selected':''}>${t.l}</option>`).join('')}
     </select>
   </div>
-  <div id="am-body">${renderTypeForm(selType, act)}</div>
-  <div class="flex-row" style="margin-top:1.5rem">
-    <button class="btn btn-primary" onclick="saveActivity()" style="flex:1">Enregistrer</button>
-    <button class="btn btn-white" onclick="closeModal('modal-add-activity')">Annuler</button>
-  </div>`;
+  <div id="am-body">${renderTypeForm(selType, act)}</div>`;
   document.getElementById('add-modal-body').innerHTML = html;
+  // Sticky footer outside scroll
+  let footer = document.getElementById('add-modal-footer');
+  if(!footer) {
+    footer = document.createElement('div');
+    footer.id = 'add-modal-footer';
+    footer.style.cssText = 'flex-shrink:0;border-top:1px solid #e9ecef;padding:1rem 0 0;margin-top:0.5rem;display:flex;gap:0.75rem;';
+    footer.innerHTML = `<button class="btn btn-primary" onclick="saveActivity()" style="flex:1">✅ Enregistrer l'exercice</button><button class="btn btn-white" onclick="closeModal('modal-add-activity')">Annuler</button>`;
+    document.querySelector('#modal-add-activity .modal').appendChild(footer);
+  }
 }
 
 function renderTypeForm(type, act) {
@@ -1412,6 +1503,135 @@ function getJsonTemplate(cat) {
 
 // ===================== HELPERS =====================
 function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function getClaudePrompt(cat) {
+  const prompts = {
+    reading: `Génère un exercice de compréhension écrite en anglais pour des élèves de Seconde (niveau A2-B1).
+
+Sujet : [ex: the environment / life in London / social media]
+Nombre de questions QCM : [ex: 4]
+Longueur du texte : [ex: 150 mots environ]
+
+Réponds UNIQUEMENT avec un JSON valide, sans texte avant ni après, au format exact suivant :
+[
+  {
+    "type": "reading_qcm",
+    "title": "[Titre de l'exercice]",
+    "text": "[Texte de lecture ici, environ 150 mots]",
+    "instructions": "Read the text and answer the questions.",
+    "questions": [
+      { "question": "[Question 1]", "options": ["[A]","[B]","[C]","[D]"], "correct": 0 }
+    ]
+  }
+]
+Note : "correct" est l'index (0,1,2,3) de la bonne réponse dans le tableau "options".`,
+
+    writing: `Génère un sujet d'expression écrite en anglais pour des élèves de Seconde (niveau A2-B1).
+
+Thème : [ex: describe your ideal school / talk about your hobbies]
+Nombre de mots demandés : [ex: 80 à 100 mots]
+
+Réponds UNIQUEMENT avec un JSON valide, sans texte avant ni après :
+[
+  {
+    "type": "writing",
+    "title": "[Titre]",
+    "prompt": "[Consigne détaillée en anglais]",
+    "wordMin": 80,
+    "wordMax": 100
+  }
+]`,
+
+    listening: `Génère un exercice de compréhension orale en anglais pour des élèves de Seconde.
+
+ID YouTube de la vidéo : [colle ici l'ID, ex: dQw4w9WgXcQ — c'est la partie après ?v= dans l'URL]
+Sujet de la vidéo : [de quoi parle la vidéo ?]
+Nombre de questions : [ex: 4]
+
+Réponds UNIQUEMENT avec un JSON valide, sans texte avant ni après :
+[
+  {
+    "type": "listening_qcm",
+    "title": "[Titre de l'exercice]",
+    "videoType": "youtube",
+    "videoId": "[ID_YOUTUBE]",
+    "instructions": "Watch the video and answer the questions.",
+    "questions": [
+      { "question": "[Question]", "options": ["[A]","[B]","[C]","[D]"], "correct": 0 }
+    ]
+  }
+]
+Note : "correct" est l'index (0,1,2,3) de la bonne réponse.`,
+
+    grammar: `Génère un exercice de grammaire anglaise pour des élèves de Seconde (niveau A2-B1).
+
+Point de grammaire : [ex: present simple vs present continuous / modal verbs / past simple]
+Type d'exercice : [QCM ou texte à trous]
+Nombre de questions : [ex: 6]
+
+Pour un QCM, réponds UNIQUEMENT avec ce JSON :
+[
+  {
+    "type": "qcm",
+    "title": "[Titre]",
+    "instructions": "Choose the correct form.",
+    "questions": [
+      { "question": "She ___ to school every day.", "options": ["go","goes","going","gone"], "correct": 1 }
+    ]
+  }
+]
+
+Pour un texte à trous, réponds UNIQUEMENT avec ce JSON :
+[
+  {
+    "type": "fill",
+    "title": "[Titre]",
+    "instructions": "Fill in the blanks with the correct form.",
+    "questions": [
+      { "sentence": "He ___ (go) to school every day.", "answer": "goes" }
+    ]
+  }
+]
+Note : dans "fill", utilisez ___ pour marquer l'emplacement de la réponse.`,
+
+    vocab: `Génère un exercice de vocabulaire anglais pour des élèves de Seconde (niveau A2-B1).
+
+Thème lexical : [ex: school subjects / emotions / daily routines / food and health]
+Type : [QCM ou texte à trous]
+Nombre de questions : [ex: 6]
+
+Pour un QCM, réponds UNIQUEMENT avec ce JSON :
+[
+  {
+    "type": "qcm",
+    "title": "[Titre]",
+    "instructions": "Choose the correct word.",
+    "questions": [
+      { "question": "A synonym for 'happy' is:", "options": ["sad","joyful","angry","tired"], "correct": 1 }
+    ]
+  }
+]
+
+Pour un texte à trous, réponds UNIQUEMENT avec ce JSON :
+[
+  {
+    "type": "fill",
+    "title": "[Titre]",
+    "instructions": "Fill in the blanks.",
+    "questions": [
+      { "sentence": "I feel very ___ when I get good marks.", "answer": "happy" }
+    ]
+  }
+]`
+  };
+  return prompts[cat]||'';
+}
+
+function copyClaudePrompt(cat) {
+  const ta = document.getElementById('claude-prompt-'+cat);
+  if(!ta) return;
+  navigator.clipboard.writeText(ta.value).then(()=>alert('Prompt copié ! Collez-le dans Claude.')).catch(()=>{ta.select();document.execCommand('copy');alert('Prompt copié !');});
+}
 
 // ===================== INIT =====================
 document.getElementById('page-home').style.display='flex';
