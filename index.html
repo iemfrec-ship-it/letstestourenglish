@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Let's test our English!</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue-50: #e8f4fd;
+    --blue-100: #c5e3f9;
+    --blue-200: #90c8f3;
+    --blue-400: #3b9fe0;
+    --blue-500: #1e7ec8;
+    --blue-600: #1565a8;
+    --blue-800: #0d3d6b;
+    --green-100: #d4edda;
+    --green-500: #28a745;
+    --green-600: #1e7e34;
+    --red-100: #f8d7da;
+    --red-500: #dc3545;
+    --amber-100: #fff3cd;
+    --amber-500: #ffc107;
+    --gray-50: #f8f9fa;
+    --gray-100: #e9ecef;
+    --gray-200: #dee2e6;
+    --gray-400: #ced4da;
+    --gray-500: #6c757d;
+    --gray-700: #495057;
+    --gray-900: #212529;
+    --white: #ffffff;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow: 0 2px 12px rgba(0,0,0,0.08);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Nunito', sans-serif; background: #e8f4fd; min-height: 100vh; color: var(--gray-900); }
+
+  /* ===== HOME ===== */
+  #page-home {
+    min-height: 100vh;
+    background: linear-gradient(160deg, #1565a8 0%, #1e7ec8 40%, #3b9fe0 70%, #90c8f3 100%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 2rem;
+  }
+  .home-card {
+    background: rgba(255,255,255,0.15); backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 24px; padding: 3rem 2.5rem; text-align: center;
+    max-width: 480px; width: 100%;
+  }
+  .home-title { font-family: 'Poppins', sans-serif; font-size: 2.2rem; font-weight: 700; color: #fff; line-height: 1.2; margin-bottom: 0.5rem; }
+  .home-subtitle { color: rgba(255,255,255,0.8); font-size: 1rem; margin-bottom: 2.5rem; }
+  .home-btn-group { display: flex; flex-direction: column; gap: 1rem; }
+  .btn-home {
+    padding: 1rem 2rem; border-radius: var(--radius); border: none; cursor: pointer;
+    font-family: 'Nunito', sans-serif; font-size: 1.05rem; font-weight: 700;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .btn-home:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.2); }
+  .btn-home.primary { background: #fff; color: var(--blue-600); }
+  .btn-home.secondary { background: rgba(255,255,255,0.2); color: #fff; border: 2px solid rgba(255,255,255,0.5); }
+  .home-footer { position: fixed; bottom: 1rem; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.7); font-size: 0.85rem; white-space: nowrap; }
+  .flag { font-size: 1.8rem; margin-bottom: 1rem; }
+
+  /* ===== GENERIC ===== */
+  .page { display: none; min-height: 100vh; background: var(--gray-50); }
+  .page.active { display: block; }
+  .topbar {
+    background: var(--blue-600); color: #fff; padding: 0.9rem 1.5rem;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow);
+  }
+  .topbar-title { font-family: 'Poppins', sans-serif; font-size: 1.1rem; font-weight: 600; }
+  .topbar-right { display: flex; gap: 0.75rem; align-items: center; }
+  .btn { padding: 0.5rem 1.1rem; border-radius: var(--radius-sm); border: none; cursor: pointer; font-family: 'Nunito', sans-serif; font-size: 0.9rem; font-weight: 600; transition: all 0.15s; }
+  .btn-white { background: #fff; color: var(--blue-600); }
+  .btn-white:hover { background: var(--blue-50); }
+  .btn-outline { background: transparent; color: #fff; border: 1.5px solid rgba(255,255,255,0.6); }
+  .btn-outline:hover { background: rgba(255,255,255,0.15); }
+  .btn-primary { background: var(--blue-500); color: #fff; }
+  .btn-primary:hover { background: var(--blue-600); }
+  .btn-danger { background: var(--red-500); color: #fff; }
+  .btn-danger:hover { background: #c82333; }
+  .btn-success { background: var(--green-500); color: #fff; }
+  .btn-success:hover { background: var(--green-600); }
+  .btn-sm { padding: 0.35rem 0.75rem; font-size: 0.8rem; }
+  .btn-icon { background: none; border: none; cursor: pointer; padding: 0.3rem; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; transition: background 0.15s; }
+  .btn-icon:hover { background: var(--gray-100); }
+  .btn-icon.danger:hover { background: var(--red-100); color: var(--red-500); }
+
+  .main-content { padding: 1.5rem; max-width: 1100px; margin: 0 auto; }
+  .section-card { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 1.5rem; overflow: hidden; }
+  .section-header { padding: 1rem 1.5rem; background: var(--blue-50); border-bottom: 1px solid var(--blue-100); display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .section-title { font-family: 'Poppins', sans-serif; font-size: 1rem; font-weight: 600; color: var(--blue-600); display: flex; align-items: center; gap: 0.5rem; }
+  .section-icon { font-size: 1.2rem; }
+  .section-body { padding: 1.5rem; }
+
+  /* ===== TABS ===== */
+  .tabs { display: flex; background: #fff; border-bottom: 2px solid var(--gray-100); overflow-x: auto; }
+  .tab { padding: 0.9rem 1.3rem; font-weight: 600; font-size: 0.9rem; cursor: pointer; color: var(--gray-500); border-bottom: 3px solid transparent; margin-bottom: -2px; white-space: nowrap; transition: color 0.15s; }
+  .tab:hover { color: var(--blue-500); }
+  .tab.active { color: var(--blue-600); border-bottom-color: var(--blue-600); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* ===== LOGIN MODAL ===== */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000;
+    display: flex; align-items: center; justify-content: center; padding: 1rem;
+  }
+  .modal { background: #fff; border-radius: var(--radius); padding: 2rem; max-width: 420px; width: 100%; box-shadow: var(--shadow-lg); }
+  .modal h2 { font-family: 'Poppins', sans-serif; font-size: 1.3rem; font-weight: 600; color: var(--blue-600); margin-bottom: 1.5rem; }
+  .form-group { margin-bottom: 1rem; }
+  .form-label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--gray-700); margin-bottom: 0.4rem; }
+  .form-input, .form-select, .form-textarea {
+    width: 100%; padding: 0.65rem 0.9rem; border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm);
+    font-family: 'Nunito', sans-serif; font-size: 0.95rem; transition: border-color 0.15s;
+    background: #fff; color: var(--gray-900);
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: var(--blue-400); }
+  .form-textarea { resize: vertical; min-height: 80px; }
+  .form-hint { font-size: 0.8rem; color: var(--gray-500); margin-top: 0.3rem; }
+  .alert { padding: 0.75rem 1rem; border-radius: var(--radius-sm); font-size: 0.9rem; margin-bottom: 1rem; }
+  .alert-danger { background: var(--red-100); color: #721c24; }
+  .alert-success { background: var(--green-100); color: #155724; }
+  .alert-info { background: var(--blue-50); color: var(--blue-800); }
+
+  /* ===== ACTIVITY CARDS ===== */
+  .activity-card { border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm); margin-bottom: 1rem; overflow: hidden; }
+  .activity-card-header { padding: 0.75rem 1rem; background: var(--gray-50); display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+  .activity-card-title { font-weight: 700; font-size: 0.95rem; }
+  .activity-card-body { padding: 1rem; }
+  .add-btn { display: flex; align-items: center; gap: 0.5rem; padding: 0.65rem 1rem; border: 2px dashed var(--blue-200); border-radius: var(--radius-sm); background: var(--blue-50); color: var(--blue-500); font-weight: 600; cursor: pointer; font-size: 0.9rem; width: 100%; justify-content: center; transition: all 0.15s; }
+  .add-btn:hover { background: var(--blue-100); border-color: var(--blue-400); }
+
+  /* ===== TEACHER DASHBOARD ===== */
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+  .stat-card { background: #fff; border-radius: var(--radius); padding: 1.1rem; box-shadow: var(--shadow); text-align: center; }
+  .stat-num { font-family: 'Poppins', sans-serif; font-size: 2rem; font-weight: 700; color: var(--blue-600); }
+  .stat-label { font-size: 0.8rem; color: var(--gray-500); font-weight: 600; margin-top: 0.2rem; }
+
+  .student-row { display: flex; align-items: center; padding: 0.85rem 1rem; border-bottom: 1px solid var(--gray-100); cursor: pointer; transition: background 0.12s; gap: 1rem; }
+  .student-row:last-child { border-bottom: none; }
+  .student-row:hover { background: var(--blue-50); }
+  .student-avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--blue-100); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem; color: var(--blue-700); flex-shrink: 0; }
+  .student-info { flex: 1; }
+  .student-name { font-weight: 700; font-size: 0.95rem; }
+  .student-meta { font-size: 0.8rem; color: var(--gray-500); }
+  .progress-bar-wrap { width: 100px; background: var(--gray-100); border-radius: 99px; height: 8px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; border-radius: 99px; background: var(--blue-400); transition: width 0.3s; }
+  .badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 99px; font-size: 0.75rem; font-weight: 700; }
+  .badge-blue { background: var(--blue-100); color: var(--blue-700); }
+  .badge-green { background: var(--green-100); color: var(--green-600); }
+  .badge-red { background: var(--red-100); color: var(--red-500); }
+  .badge-gray { background: var(--gray-100); color: var(--gray-500); }
+
+  /* ===== STUDENT DETAIL ===== */
+  .detail-row { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0; border-bottom: 1px solid var(--gray-100); font-size: 0.9rem; }
+  .check-icon { font-size: 1rem; }
+  .check-ok { color: var(--green-500); }
+  .check-fail { color: var(--red-500); }
+  .pct-pill { padding: 0.2rem 0.55rem; border-radius: 99px; font-size: 0.78rem; font-weight: 700; }
+
+  /* ===== STUDENT EXERCISE ===== */
+  .exercise-block { margin-bottom: 1.5rem; }
+  .exercise-title { font-family: 'Poppins', sans-serif; font-size: 1.05rem; font-weight: 600; color: var(--blue-600); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--blue-100); }
+  .qcm-option { display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 1rem; border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm); margin-bottom: 0.5rem; cursor: pointer; transition: all 0.15s; font-size: 0.95rem; }
+  .qcm-option:hover { border-color: var(--blue-400); background: var(--blue-50); }
+  .qcm-option.selected { border-color: var(--blue-500); background: var(--blue-50); }
+  .qcm-option.correct { border-color: var(--green-500); background: var(--green-100); }
+  .qcm-option.wrong { border-color: var(--red-500); background: var(--red-100); }
+  .qcm-radio { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--gray-400); flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .qcm-option.selected .qcm-radio { border-color: var(--blue-500); background: var(--blue-500); }
+  .qcm-option.correct .qcm-radio { border-color: var(--green-500); background: var(--green-500); }
+  .qcm-option.wrong .qcm-radio { border-color: var(--red-500); background: var(--red-500); }
+  .video-wrap { position: relative; padding-bottom: 56.25%; height: 0; border-radius: var(--radius-sm); overflow: hidden; background: #000; margin-bottom: 1rem; }
+  .video-wrap iframe, .video-wrap video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+  .text-passage { background: var(--gray-50); border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm); padding: 1.25rem; font-size: 0.95rem; line-height: 1.7; margin-bottom: 1rem; max-height: 300px; overflow-y: auto; }
+  .split-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  @media (max-width: 700px) { .split-layout { grid-template-columns: 1fr; } }
+  .score-display { display: flex; align-items: center; gap: 1rem; padding: 1rem; background: var(--blue-50); border-radius: var(--radius-sm); margin-top: 1rem; }
+  .score-big { font-family: 'Poppins', sans-serif; font-size: 2rem; font-weight: 700; color: var(--blue-600); }
+  .submitted-tag { display: inline-flex; align-items: center; gap: 0.4rem; background: var(--green-100); color: var(--green-600); padding: 0.35rem 0.8rem; border-radius: 99px; font-size: 0.82rem; font-weight: 700; }
+  .fill-input { border: none; border-bottom: 2px solid var(--blue-400); background: transparent; font-family: 'Nunito', sans-serif; font-size: 0.95rem; padding: 0.1rem 0.3rem; min-width: 80px; text-align: center; color: var(--gray-900); }
+  .fill-input:focus { outline: none; border-bottom-color: var(--blue-600); }
+  .fill-input.correct { border-bottom-color: var(--green-500); color: var(--green-600); }
+  .fill-input.wrong { border-bottom-color: var(--red-500); color: var(--red-500); }
+
+  /* ===== FORM BUILDER ===== */
+  .form-row { display: flex; gap: 0.75rem; align-items: flex-end; }
+  .form-row .form-group { flex: 1; margin-bottom: 0; }
+  .options-list { margin-top: 0.75rem; }
+  .option-row { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.4rem; }
+  .option-row input[type="text"] { flex: 1; }
+  .option-row input[type="radio"] { width: 16px; height: 16px; }
+  .json-area { font-family: monospace; font-size: 0.82rem; background: #1e1e1e; color: #d4d4d4; border-radius: var(--radius-sm); padding: 1rem; border: none; min-height: 150px; }
+  .copy-btn { background: var(--gray-700); color: #fff; }
+  .copy-btn:hover { background: var(--gray-900); }
+
+  /* Code view */
+  code { font-family: monospace; font-size: 0.82rem; background: var(--gray-100); padding: 0.15rem 0.4rem; border-radius: 4px; }
+  pre { background: #1e1e1e; color: #d4d4d4; border-radius: var(--radius-sm); padding: 1rem; overflow-x: auto; font-size: 0.82rem; }
+
+  /* ===== TEACHER SETTINGS ===== */
+  .settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+
+  /* ===== MISC ===== */
+  .empty-state { text-align: center; padding: 3rem 1rem; color: var(--gray-500); }
+  .empty-state .empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+  .empty-state p { font-size: 0.95rem; }
+  .divider { border: none; border-top: 1px solid var(--gray-100); margin: 1rem 0; }
+  .chip { display: inline-flex; align-items: center; gap: 0.3rem; background: var(--blue-50); color: var(--blue-700); border-radius: 99px; padding: 0.2rem 0.65rem; font-size: 0.8rem; font-weight: 600; }
+  .flex-row { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+  h3 { font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 1rem; color: var(--gray-700); margin-bottom: 1rem; }
+
+  .result-detail-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  .result-detail-table th { background: var(--blue-50); color: var(--blue-700); padding: 0.6rem 0.8rem; text-align: left; font-weight: 700; }
+  .result-detail-table td { padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--gray-100); vertical-align: top; }
+  .result-detail-table tr:last-child td { border-bottom: none; }
+
+  /* ===== SCROLLBAR ===== */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--gray-300, #dee2e6); border-radius: 3px; }
+
+  /* Back button */
+  .back-btn { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--blue-500); font-weight: 600; font-size: 0.9rem; cursor: pointer; margin-bottom: 1.2rem; }
+  .back-btn:hover { color: var(--blue-700); }
+
+  /* Collapsible */
+  .collapsible-toggle { cursor: pointer; user-select: none; }
+  .collapsible-content { display: block; }
+
+  .no-print { }
+</style>
+</head>
+<body>
+
+<!-- ===== HOME ===== -->
+<div id="page-home">
+  <div class="home-card">
+    <div class="flag">🇬🇧</div>
+    <div class="home-title">Let's test our<br>English!</div>
+    <div class="home-subtitle">Évaluation diagnostique – Seconde</div>
+    <div class="home-btn-group">
+      <button class="btn-home primary" onclick="showStudentLogin()">👩‍🎓 Espace Élève</button>
+      <button class="btn-home secondary" onclick="showTeacherLogin()">👩‍🏫 Espace Professeur</button>
+    </div>
+  </div>
+  <div class="home-footer">Créé par C. Iemfre</div>
+</div>
+
+<!-- ===== STUDENT LOGIN MODAL ===== -->
+<div id="modal-student" class="modal-overlay" style="display:none;">
+  <div class="modal">
+    <h2>🎓 Connexion Élève</h2>
+    <div id="student-login-error" class="alert alert-danger" style="display:none;"></div>
+    <div class="form-group">
+      <label class="form-label">Code d'accès</label>
+      <input id="sl-code" class="form-input" type="password" placeholder="Entrez le code donné par votre prof">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Classe</label>
+      <input id="sl-class" class="form-input" type="text" placeholder="Ex: 2nde A">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Filière</label>
+      <input id="sl-track" class="form-input" type="text" placeholder="Ex: Sciences, STMG, Bac Pro...">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Prénom</label>
+      <input id="sl-firstname" class="form-input" type="text" placeholder="Votre prénom">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Initiale du nom</label>
+      <input id="sl-initial" class="form-input" type="text" maxlength="1" placeholder="Ex: D" style="max-width:80px">
+    </div>
+    <div class="flex-row" style="margin-top:1.5rem;">
+      <button class="btn btn-primary" onclick="doStudentLogin()" style="flex:1">Accéder aux exercices →</button>
+      <button class="btn btn-white" onclick="closeModal('modal-student')">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TEACHER LOGIN MODAL ===== -->
+<div id="modal-teacher" class="modal-overlay" style="display:none;">
+  <div class="modal">
+    <h2>👩‍🏫 Connexion Professeur</h2>
+    <div id="teacher-login-error" class="alert alert-danger" style="display:none;"></div>
+    <div class="form-group">
+      <label class="form-label">Mot de passe professeur</label>
+      <input id="tl-password" class="form-input" type="password" placeholder="Mot de passe">
+    </div>
+    <div class="flex-row" style="margin-top:1.5rem;">
+      <button class="btn btn-primary" onclick="doTeacherLogin()" style="flex:1">Accéder →</button>
+      <button class="btn btn-white" onclick="closeModal('modal-teacher')">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== STUDENT PAGE ===== -->
+<div id="page-student" class="page">
+  <div class="topbar">
+    <div class="topbar-title">🇬🇧 Let's test our English!</div>
+    <div class="topbar-right">
+      <span id="student-greeting" style="font-size:0.85rem;opacity:0.85"></span>
+      <button class="btn btn-outline btn-sm" onclick="logoutStudent()">Quitter</button>
+    </div>
+  </div>
+  <div class="tabs" id="student-tabs">
+    <div class="tab active" data-tab="s-reading" onclick="switchTab('student','s-reading')">📖 Compréhension écrite</div>
+    <div class="tab" data-tab="s-writing" onclick="switchTab('student','s-writing')">✍️ Expression écrite</div>
+    <div class="tab" data-tab="s-listening" onclick="switchTab('student','s-listening')">🎧 Compréhension orale</div>
+    <div class="tab" data-tab="s-grammar" onclick="switchTab('student','s-grammar')">📝 Grammaire</div>
+    <div class="tab" data-tab="s-vocab" onclick="switchTab('student','s-vocab')">📚 Vocabulaire</div>
+  </div>
+  <div class="main-content">
+    <div id="s-reading" class="tab-content active"></div>
+    <div id="s-writing" class="tab-content"></div>
+    <div id="s-listening" class="tab-content"></div>
+    <div id="s-grammar" class="tab-content"></div>
+    <div id="s-vocab" class="tab-content"></div>
+  </div>
+</div>
+
+<!-- ===== TEACHER PAGE ===== -->
+<div id="page-teacher" class="page">
+  <div class="topbar">
+    <div class="topbar-title">👩‍🏫 Interface Professeur – Let's test our English!</div>
+    <div class="topbar-right">
+      <button class="btn btn-outline btn-sm" onclick="logoutTeacher()">Déconnexion</button>
+    </div>
+  </div>
+  <div class="tabs" id="teacher-tabs">
+    <div class="tab active" data-tab="t-results" onclick="switchTab('teacher','t-results')">📊 Résultats</div>
+    <div class="tab" data-tab="t-reading" onclick="switchTab('teacher','t-reading')">📖 Compréhension écrite</div>
+    <div class="tab" data-tab="t-writing" onclick="switchTab('teacher','t-writing')">✍️ Expression écrite</div>
+    <div class="tab" data-tab="t-listening" onclick="switchTab('teacher','t-listening')">🎧 Compréhension orale</div>
+    <div class="tab" data-tab="t-grammar" onclick="switchTab('teacher','t-grammar')">📝 Grammaire</div>
+    <div class="tab" data-tab="t-vocab" onclick="switchTab('teacher','t-vocab')">📚 Vocabulaire</div>
+    <div class="tab" data-tab="t-settings" onclick="switchTab('teacher','t-settings')">⚙️ Paramètres</div>
+  </div>
+  <div class="main-content">
+    <div id="t-results" class="tab-content active"></div>
+    <div id="t-reading" class="tab-content"></div>
+    <div id="t-writing" class="tab-content"></div>
+    <div id="t-listening" class="tab-content"></div>
+    <div id="t-grammar" class="tab-content"></div>
+    <div id="t-vocab" class="tab-content"></div>
+    <div id="t-settings" class="tab-content"></div>
+  </div>
+</div>
+
+<!-- ===== ADD ACTIVITY MODAL ===== -->
+<div id="modal-add-activity" class="modal-overlay" style="display:none;">
+  <div class="modal" style="max-width:600px;">
+    <h2 id="add-modal-title">Ajouter une activité</h2>
+    <div id="add-modal-body"></div>
+  </div>
+</div>
+
+<!-- ===== IMPORT JSON MODAL ===== -->
+<div id="modal-import-json" class="modal-overlay" style="display:none;">
+  <div class="modal" style="max-width:560px;">
+    <h2>Importer via JSON</h2>
+    <div class="form-group">
+      <label class="form-label">Collez le JSON généré par Claude</label>
+      <textarea id="json-import-area" class="form-textarea json-area" rows="10" placeholder='{ "type": "qcm", "title": "...", ... }'></textarea>
+    </div>
+    <div id="json-import-error" class="alert alert-danger" style="display:none;"></div>
+    <div class="flex-row" style="margin-top:1rem;">
+      <button class="btn btn-primary" onclick="doImportJson()" style="flex:1">Importer</button>
+      <button class="btn btn-white" onclick="closeModal('modal-import-json')">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== STUDENT DETAIL MODAL ===== -->
+<div id="modal-student-detail" class="modal-overlay" style="display:none;overflow-y:auto;">
+  <div class="modal" style="max-width:700px;max-height:90vh;overflow-y:auto;">
+    <div id="student-detail-content"></div>
+    <div style="margin-top:1.5rem;text-align:right;"><button class="btn btn-white" onclick="closeModal('modal-student-detail')">Fermer</button></div>
+  </div>
+</div>
+
+<script>
+// ===================== DATA LAYER =====================
+const DB_KEY = 'lte_db';
+
+function getDB() {
+  try { return JSON.parse(localStorage.getItem(DB_KEY)) || defaultDB(); }
+  catch(e) { return defaultDB(); }
+}
+function saveDB(db) { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
+function defaultDB() {
+  return {
+    teacherPassword: '0504',
+    studentCode: 'english2025',
+    activities: { reading: [], writing: [], listening: [], grammar: [], vocab: [] },
+    results: []
+  };
+}
+
+// ===================== AUTH =====================
+let currentStudent = null;
+let currentTeacher = false;
+
+function showStudentLogin() { document.getElementById('modal-student').style.display='flex'; }
+function showTeacherLogin() { document.getElementById('modal-teacher').style.display='flex'; }
+function closeModal(id) { document.getElementById(id).style.display='none'; }
+
+function doStudentLogin() {
+  const code = document.getElementById('sl-code').value.trim();
+  const cls = document.getElementById('sl-class').value.trim();
+  const track = document.getElementById('sl-track').value;
+  const name = document.getElementById('sl-firstname').value.trim();
+  const init = document.getElementById('sl-initial').value.trim().toUpperCase();
+  const db = getDB();
+  const err = document.getElementById('student-login-error');
+  if(code !== db.studentCode) { err.textContent='Code incorrect.'; err.style.display='block'; return; }
+  if(!cls||!track||!name||!init) { err.textContent='Tous les champs sont obligatoires.'; err.style.display='block'; return; }
+  err.style.display='none';
+  currentStudent = { cls, track, name, init, id: cls+'_'+name+'_'+init };
+  closeModal('modal-student');
+  document.getElementById('student-greeting').textContent = name+' '+init+'. – '+cls;
+  showPage('page-student');
+  renderStudentTabs();
+}
+
+function doTeacherLogin() {
+  const pw = document.getElementById('tl-password').value;
+  const db = getDB();
+  const err = document.getElementById('teacher-login-error');
+  if(pw !== db.teacherPassword) { err.textContent='Mot de passe incorrect.'; err.style.display='block'; return; }
+  err.style.display='none';
+  currentTeacher = true;
+  closeModal('modal-teacher');
+  showPage('page-teacher');
+  renderTeacherTabs();
+}
+
+function logoutStudent() { currentStudent=null; showPage('page-home'); }
+function logoutTeacher() { currentTeacher=false; showPage('page-home'); }
+
+// ===================== NAVIGATION =====================
+function showPage(id) {
+  document.getElementById('page-home').style.display='none';
+  ['page-student','page-teacher'].forEach(p=>document.getElementById(p).classList.remove('active'));
+  if(id==='page-home') document.getElementById('page-home').style.display='flex';
+  else document.getElementById(id).classList.add('active');
+}
+
+function switchTab(ctx, id) {
+  const prefix = ctx==='student'?'student':'teacher';
+  document.querySelectorAll(`#${prefix}-tabs .tab`).forEach(t=>t.classList.toggle('active', t.dataset.tab===id));
+  const container = document.getElementById(ctx==='student'?'page-student':'page-teacher');
+  container.querySelectorAll('.tab-content').forEach(c=>c.classList.toggle('active', c.id===id));
+}
+
+// ===================== CATEGORY META =====================
+const CATS = {
+  reading:   { label:'Compréhension écrite', icon:'📖', color:'#1565a8' },
+  writing:   { label:'Expression écrite',    icon:'✍️', color:'#6f42c1' },
+  listening: { label:'Compréhension orale',  icon:'🎧', color:'#0d6efd' },
+  grammar:   { label:'Grammaire',            icon:'📝', color:'#198754' },
+  vocab:     { label:'Vocabulaire',          icon:'📚', color:'#fd7e14' }
+};
+
+// ===================== RENDER STUDENT TABS =====================
+function renderStudentTabs() {
+  const db = getDB();
+  Object.keys(CATS).forEach(cat => {
+    const el = document.getElementById('s-'+cat);
+    const acts = db.activities[cat]||[];
+    if(acts.length===0) {
+      el.innerHTML = `<div class="empty-state"><div class="empty-icon">${CATS[cat].icon}</div><p>Aucun exercice disponible pour l'instant.</p></div>`;
+      return;
+    }
+    el.innerHTML = acts.map((a,i)=>renderStudentActivity(cat,a,i)).join('');
+  });
+}
+
+function renderStudentActivity(cat, act, idx) {
+  const db = getDB();
+  const res = getStudentResult(db, currentStudent.id, cat, idx);
+  const submitted = res && res.submitted;
+  const submitBadge = submitted ? '<span class="submitted-tag">✅ Envoyé</span>' : '';
+
+  let body = '';
+  if(act.type==='qcm') {
+    body = renderStudentQcm(cat, act, idx, res);
+  } else if(act.type==='fill') {
+    body = renderStudentFill(cat, act, idx, res);
+  } else if(act.type==='writing') {
+    body = renderStudentWriting(cat, act, idx, res);
+  } else if(act.type==='reading_qcm') {
+    body = renderStudentReadingQcm(cat, act, idx, res);
+  } else if(act.type==='listening_qcm') {
+    body = renderStudentListeningQcm(cat, act, idx, res);
+  }
+
+  return `<div class="section-card">
+    <div class="section-header">
+      <div class="section-title"><span class="section-icon">${CATS[cat].icon}</span>${act.title||'Exercice '+(idx+1)}</div>
+      ${submitBadge}
+    </div>
+    <div class="section-body">${body}</div>
+  </div>`;
+}
+
+function renderStudentQcm(cat, act, idx, res) {
+  const submitted = res && res.submitted;
+  let html = '';
+  if(act.instructions) html += `<p style="margin-bottom:1rem;font-size:0.95rem;color:var(--gray-700)">${act.instructions}</p>`;
+  act.questions.forEach((q,qi)=>{
+    html += `<div class="exercise-block">
+      <div style="font-weight:700;margin-bottom:0.75rem;font-size:0.95rem">${qi+1}. ${q.question}</div>`;
+    q.options.forEach((opt,oi)=>{
+      let cls='qcm-option';
+      if(submitted) {
+        if(oi===q.correct) cls+=' correct';
+        else if(res.answers&&res.answers[qi]===oi&&oi!==q.correct) cls+=' wrong';
+      } else {
+        if(res&&res.answers&&res.answers[qi]===oi) cls+=' selected';
+      }
+      html += `<div class="${cls}" onclick="${submitted?'':'selectQcmOption(this,\''+cat+'\','+idx+','+qi+','+oi+')'}">
+        <div class="qcm-radio"></div><span>${opt}</span></div>`;
+    });
+    html += '</div>';
+  });
+  if(!submitted) html += `<button class="btn btn-primary" style="margin-top:0.5rem" onclick="submitActivity('${cat}',${idx},'qcm')">Valider mes réponses</button>`;
+  else {
+    const score = computeQcmScore(act, res.answers);
+    html += `<div class="score-display"><span class="score-big">${score.got}/${score.total}</span><span style="font-size:0.95rem;color:var(--gray-500)">Résultat</span></div>`;
+  }
+  return html;
+}
+
+function renderStudentFill(cat, act, idx, res) {
+  const submitted = res && res.submitted;
+  let html = '';
+  if(act.instructions) html += `<p style="margin-bottom:1rem;font-size:0.95rem">${act.instructions}</p>`;
+  act.questions.forEach((q,qi)=>{
+    let ans = res&&res.answers?res.answers[qi]:'';
+    let inputClass = 'fill-input';
+    if(submitted) {
+      const correct = q.answer.trim().toLowerCase();
+      const given = (ans||'').trim().toLowerCase();
+      inputClass += given===correct?' correct':' wrong';
+    }
+    html += `<div style="margin-bottom:1rem;font-size:0.95rem">
+      ${q.sentence.replace('___', `<input class="${inputClass}" id="fill_${cat}_${idx}_${qi}" type="text" value="${escHtml(ans||'')}" ${submitted?'disabled':''} style="min-width:100px">`)}
+      ${submitted&&(ans||'').trim().toLowerCase()!==q.answer.trim().toLowerCase()?`<span style="color:var(--green-500);font-size:0.85rem;margin-left:0.5rem">→ ${q.answer}</span>`:''}
+    </div>`;
+  });
+  if(!submitted) html += `<button class="btn btn-primary" onclick="submitActivity('${cat}',${idx},'fill')">Valider</button>`;
+  else {
+    const answers = act.questions.map((q,qi)=>res.answers[qi]||'');
+    const got = act.questions.filter((q,qi)=>(answers[qi]||'').trim().toLowerCase()===q.answer.trim().toLowerCase()).length;
+    html += `<div class="score-display"><span class="score-big">${got}/${act.questions.length}</span></div>`;
+  }
+  return html;
+}
+
+function renderStudentWriting(cat, act, idx, res) {
+  const submitted = res && res.submitted;
+  let html = '';
+  if(act.prompt) html += `<div class="text-passage" style="background:var(--blue-50);border-color:var(--blue-100)">${act.prompt}</div>`;
+  if(act.wordMin||act.wordMax) html += `<p style="font-size:0.82rem;color:var(--gray-500);margin-bottom:0.75rem">Nombre de mots recommandé : ${act.wordMin||''}${act.wordMax?'–'+act.wordMax:''}</p>`;
+  if(submitted) {
+    html += `<div class="text-passage">${escHtml(res.answers[0]||'').replace(/\n/g,'<br>')}</div>
+    <span class="submitted-tag">✅ Texte envoyé au professeur</span>`;
+  } else {
+    html += `<textarea class="form-textarea" id="writing_${cat}_${idx}" rows="8" placeholder="Rédigez votre réponse ici...">${escHtml(res&&res.answers?res.answers[0]||'':'')}</textarea>
+    <button class="btn btn-primary" style="margin-top:0.75rem" onclick="submitActivity('${cat}',${idx},'writing')">Envoyer</button>`;
+  }
+  return html;
+}
+
+function renderStudentReadingQcm(cat, act, idx, res) {
+  const submitted = res && res.submitted;
+  let html = `<div class="split-layout">
+    <div>
+      <div style="font-weight:700;margin-bottom:0.5rem;font-size:0.85rem;text-transform:uppercase;color:var(--gray-500)">Texte</div>
+      <div class="text-passage">${(act.text||'').replace(/\n/g,'<br>')}</div>
+    </div>
+    <div>
+      <div style="font-weight:700;margin-bottom:0.75rem;font-size:0.85rem;text-transform:uppercase;color:var(--gray-500)">Questions</div>`;
+  if(act.instructions) html += `<p style="margin-bottom:1rem;font-size:0.9rem">${act.instructions}</p>`;
+  act.questions.forEach((q,qi)=>{
+    html += `<div class="exercise-block">
+      <div style="font-weight:700;margin-bottom:0.6rem;font-size:0.9rem">${qi+1}. ${q.question}</div>`;
+    q.options.forEach((opt,oi)=>{
+      let cls='qcm-option';
+      if(submitted) {
+        if(oi===q.correct) cls+=' correct';
+        else if(res.answers&&res.answers[qi]===oi&&oi!==q.correct) cls+=' wrong';
+      } else {
+        if(res&&res.answers&&res.answers[qi]===oi) cls+=' selected';
+      }
+      html += `<div class="${cls}" style="font-size:0.88rem;padding:0.5rem 0.8rem" onclick="${submitted?'':'selectQcmOption(this,\''+cat+'\','+idx+','+qi+','+oi+')'}">
+        <div class="qcm-radio"></div><span>${opt}</span></div>`;
+    });
+    html += '</div>';
+  });
+  html += '</div></div>';
+  if(!submitted) html += `<button class="btn btn-primary" style="margin-top:0.5rem" onclick="submitActivity('${cat}',${idx},'qcm')">Valider</button>`;
+  else {
+    const score = computeQcmScore(act, res.answers);
+    html += `<div class="score-display"><span class="score-big">${score.got}/${score.total}</span></div>`;
+  }
+  return html;
+}
+
+function renderStudentListeningQcm(cat, act, idx, res) {
+  const submitted = res && res.submitted;
+  let html = `<div class="split-layout">
+    <div>
+      <div style="font-weight:700;margin-bottom:0.5rem;font-size:0.85rem;text-transform:uppercase;color:var(--gray-500)">Vidéo</div>`;
+  if(act.videoType==='youtube'&&act.videoId) {
+    html += `<div class="video-wrap"><iframe src="https://www.youtube.com/embed/${act.videoId}?rel=0" allowfullscreen></iframe></div>`;
+  } else if(act.videoUrl) {
+    html += `<div class="video-wrap"><video controls src="${act.videoUrl}"></video></div>`;
+  } else {
+    html += `<div style="background:var(--gray-100);border-radius:var(--radius-sm);padding:2rem;text-align:center;color:var(--gray-500)">Vidéo non disponible</div>`;
+  }
+  html += '</div><div>';
+  if(act.instructions) html += `<p style="margin-bottom:1rem;font-size:0.9rem">${act.instructions}</p>`;
+  act.questions.forEach((q,qi)=>{
+    html += `<div class="exercise-block">
+      <div style="font-weight:700;margin-bottom:0.6rem;font-size:0.9rem">${qi+1}. ${q.question}</div>`;
+    q.options.forEach((opt,oi)=>{
+      let cls='qcm-option';
+      if(submitted) {
+        if(oi===q.correct) cls+=' correct';
+        else if(res.answers&&res.answers[qi]===oi&&oi!==q.correct) cls+=' wrong';
+      } else {
+        if(res&&res.answers&&res.answers[qi]===oi) cls+=' selected';
+      }
+      html += `<div class="${cls}" style="font-size:0.88rem;padding:0.5rem 0.8rem" onclick="${submitted?'':'selectQcmOption(this,\''+cat+'\','+idx+','+qi+','+oi+')'}">
+        <div class="qcm-radio"></div><span>${opt}</span></div>`;
+    });
+    html += '</div>';
+  });
+  html += '</div></div>';
+  if(!submitted) html += `<button class="btn btn-primary" style="margin-top:0.5rem" onclick="submitActivity('${cat}',${idx},'listening_qcm')">Valider</button>`;
+  else {
+    const score = computeQcmScore(act, res.answers);
+    html += `<div class="score-display"><span class="score-big">${score.got}/${score.total}</span></div>`;
+  }
+  return html;
+}
+
+function selectQcmOption(el, cat, actIdx, qIdx, oIdx) {
+  const card = el.closest('.section-card');
+  const block = el.closest('.exercise-block');
+  block.querySelectorAll('.qcm-option').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  // store temp
+  if(!window._tempAnswers) window._tempAnswers={};
+  const key = cat+'_'+actIdx;
+  if(!window._tempAnswers[key]) window._tempAnswers[key]={};
+  window._tempAnswers[key][qIdx]=oIdx;
+}
+
+function submitActivity(cat, actIdx, type) {
+  const db = getDB();
+  const act = db.activities[cat][actIdx];
+  let answers = {};
+  if(type==='qcm'||type==='listening_qcm') {
+    const temp = (window._tempAnswers||{})[cat+'_'+actIdx]||{};
+    const n = act.questions.length;
+    for(let i=0;i<n;i++) answers[i] = temp[i]!==undefined?temp[i]:null;
+  } else if(type==='fill') {
+    act.questions.forEach((q,qi)=>{
+      const inp = document.getElementById('fill_'+cat+'_'+actIdx+'_'+qi);
+      answers[qi] = inp?inp.value:'';
+    });
+  } else if(type==='writing') {
+    const ta = document.getElementById('writing_'+cat+'_'+actIdx);
+    answers[0] = ta?ta.value:'';
+  }
+  saveStudentResult(db, currentStudent, cat, actIdx, { submitted: true, answers, ts: Date.now() });
+  renderStudentTabs();
+}
+
+// ===================== RESULTS STORAGE =====================
+function getStudentResult(db, studentId, cat, actIdx) {
+  const r = (db.results||[]).find(r=>r.studentId===studentId&&r.cat===cat&&r.actIdx===actIdx);
+  return r||null;
+}
+function saveStudentResult(db, student, cat, actIdx, data) {
+  if(!db.results) db.results=[];
+  const idx = db.results.findIndex(r=>r.studentId===student.id&&r.cat===cat&&r.actIdx===actIdx);
+  const entry = { studentId: student.id, studentName: student.name, studentInit: student.init, studentClass: student.cls, studentTrack: student.track, cat, actIdx, ...data };
+  if(idx>=0) db.results[idx]=entry; else db.results.push(entry);
+  saveDB(db);
+}
+
+function computeQcmScore(act, answers) {
+  const total = act.questions.length;
+  let got = 0;
+  act.questions.forEach((q,qi)=>{ if(answers&&answers[qi]===q.correct) got++; });
+  return { got, total };
+}
+
+// ===================== TEACHER TABS RENDER =====================
+function renderTeacherTabs() {
+  renderTeacherResults();
+  ['reading','writing','listening','grammar','vocab'].forEach(cat=>renderTeacherCat(cat));
+  renderTeacherSettings();
+}
+
+// --- RESULTS ---
+function renderTeacherResults() {
+  const db = getDB();
+  const el = document.getElementById('t-results');
+  const results = db.results||[];
+  // Group by student
+  const students = {};
+  results.forEach(r=>{
+    if(!students[r.studentId]) students[r.studentId]={ id:r.studentId, name:r.studentName, init:r.studentInit, cls:r.studentClass, track:r.studentTrack, results:[] };
+    students[r.studentId].results.push(r);
+  });
+  const list = Object.values(students);
+  const totalActs = Object.values(db.activities).reduce((a,b)=>a+b.length,0);
+
+  let html = `<div class="stats-grid">
+    <div class="stat-card"><div class="stat-num">${list.length}</div><div class="stat-label">Élèves</div></div>
+    <div class="stat-card"><div class="stat-num">${totalActs}</div><div class="stat-label">Exercices créés</div></div>
+    <div class="stat-card"><div class="stat-num">${results.filter(r=>r.submitted).length}</div><div class="stat-label">Soumissions</div></div>
+  </div>`;
+
+  if(list.length===0) {
+    html += `<div class="empty-state"><div class="empty-icon">📊</div><p>Aucun résultat élève pour l'instant.</p></div>`;
+  } else {
+    const classes = [...new Set(list.map(s=>s.cls))].sort();
+    const tracks = [...new Set(list.map(s=>s.track).filter(Boolean))].sort();
+    // Read current filter values (preserve across re-renders via hidden inputs trick)
+    const prevCls = (document.getElementById('filter-class')||{}).value||'';
+    const prevTrack = (document.getElementById('filter-track')||{}).value||'';
+
+    html += `<div class="section-card"><div class="section-header"><div class="section-title">📋 Liste des élèves</div>
+      <div class="flex-row">
+        <select class="form-select" style="max-width:160px;padding:0.4rem 0.7rem;" id="filter-class" onchange="renderTeacherResults()">
+          <option value="">Toutes les classes</option>
+          ${classes.map(c=>`<option value="${c}"${c===prevCls?' selected':''}>${c}</option>`).join('')}
+        </select>
+        <select class="form-select" style="max-width:170px;padding:0.4rem 0.7rem;" id="filter-track" onchange="renderTeacherResults()">
+          <option value="">Toutes les filières</option>
+          ${tracks.map(t=>`<option value="${t}"${t===prevTrack?' selected':''}>${t}</option>`).join('')}
+        </select>
+      </div>
+    </div>`;
+
+    let filtered = list;
+    if(prevCls) filtered = filtered.filter(s=>s.cls===prevCls);
+    if(prevTrack) filtered = filtered.filter(s=>(s.track||'')===prevTrack);
+    filtered.sort((a,b)=>{ const tc=(a.track||'').localeCompare(b.track||''); return tc!==0?tc:a.cls.localeCompare(b.cls)||a.name.localeCompare(b.name); });
+
+    if(filtered.length===0) {
+      html += `<div style="padding:2rem;text-align:center;color:var(--gray-500)">Aucun élève pour cette sélection.</div>`;
+    } else {
+      // Group by track then class
+      const grouped = {};
+      filtered.forEach(s=>{
+        const key = (s.track||'—')+'|||'+(s.cls||'—');
+        if(!grouped[key]) grouped[key]=[];
+        grouped[key].push(s);
+      });
+      Object.entries(grouped).sort(([a],[b])=>a.localeCompare(b)).forEach(([key, students])=>{
+        const [track, cls] = key.split('|||');
+        html += `<div style="padding:0.6rem 1.2rem;background:var(--blue-50);border-top:1px solid var(--blue-100);font-size:0.82rem;font-weight:700;color:var(--blue-700)">
+          📁 ${track} — ${cls} <span style="font-weight:400;color:var(--blue-500)">(${students.length} élève${students.length>1?'s':''})</span></div>`;
+        students.forEach(s=>{
+          const submitted = s.results.filter(r=>r.submitted).length;
+          const pct = totalActs>0?Math.round(submitted/totalActs*100):0;
+          const avg = computeStudentAvg(db, s);
+          html += `<div class="student-row" onclick="showStudentDetail('${escHtml(s.id)}')">
+            <div class="student-avatar">${(s.name||'?')[0]}${s.init||''}</div>
+            <div class="student-info">
+              <div class="student-name">${s.name} ${s.init}.</div>
+              <div class="student-meta">${s.cls} · <span style="color:var(--blue-500)">${s.track||'—'}</span></div>
+            </div>
+            <div style="text-align:center">
+              <div style="font-size:0.78rem;color:var(--gray-500);margin-bottom:3px">Complété</div>
+              <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
+              <div style="font-size:0.78rem;color:var(--gray-500);margin-top:2px">${submitted}/${totalActs}</div>
+            </div>
+            <div style="text-align:center">
+              <div style="font-size:0.78rem;color:var(--gray-500);margin-bottom:4px">Score moy.</div>
+              ${avg!==null?`<span class="badge ${avg>=70?'badge-green':avg>=40?'badge-blue':'badge-red'}">${avg}%</span>`:'<span class="badge badge-gray">—</span>'}
+            </div>
+            <span style="color:var(--blue-400);font-size:1.2rem">›</span>
+          </div>`;
+        });
+      });
+    }
+    html += '</div>';
+  }
+  el.innerHTML = html;
+}
+
+function computeStudentAvg(db, student) {
+  const results = student.results.filter(r=>r.submitted);
+  if(results.length===0) return null;
+  let total=0, count=0;
+  results.forEach(r=>{
+    if(r.cat==='writing') return;
+    const act = (db.activities[r.cat]||[])[r.actIdx];
+    if(!act) return;
+    let score=null;
+    if(act.type==='qcm'||act.type==='reading_qcm'||act.type==='listening_qcm') {
+      const s = computeQcmScore(act, r.answers);
+      if(s.total>0) { score = s.got/s.total*100; }
+    } else if(act.type==='fill') {
+      const got = act.questions.filter((q,qi)=>(r.answers[qi]||'').trim().toLowerCase()===q.answer.trim().toLowerCase()).length;
+      score = got/act.questions.length*100;
+    }
+    if(score!==null) { total+=score; count++; }
+  });
+  return count>0?Math.round(total/count):null;
+}
+
+function showStudentDetail(studentId) {
+  const db = getDB();
+  const results = (db.results||[]).filter(r=>r.studentId===studentId&&r.submitted);
+  if(results.length===0) { alert('Aucun résultat disponible pour cet élève.'); return; }
+  const s = results[0];
+  let html = `<h2>${s.studentName} ${s.studentInit}. – ${s.studentClass} (${s.studentTrack})</h2><hr class="divider">`;
+  Object.keys(CATS).forEach(cat=>{
+    const catResults = results.filter(r=>r.cat===cat);
+    if(catResults.length===0) return;
+    html += `<h3 style="margin-top:1.2rem">${CATS[cat].icon} ${CATS[cat].label}</h3>`;
+    catResults.forEach(r=>{
+      const act = (db.activities[cat]||[])[r.actIdx];
+      if(!act) return;
+      html += `<div class="activity-card" style="margin-bottom:1rem;">
+        <div class="activity-card-header"><span class="activity-card-title">${act.title||'Exercice '+(r.actIdx+1)}</span>`;
+      if(act.type==='writing') {
+        html += `<span class="badge badge-blue">Expression libre</span></div>
+          <div class="activity-card-body" style="font-size:0.9rem;line-height:1.6">${escHtml(r.answers[0]||'(vide)').replace(/\n/g,'<br>')}</div></div>`;
+        return;
+      }
+      // Score
+      let got=0, total=0;
+      if(act.type==='qcm'||act.type==='reading_qcm'||act.type==='listening_qcm') {
+        const sc=computeQcmScore(act,r.answers); got=sc.got; total=sc.total;
+      } else if(act.type==='fill') {
+        total=act.questions.length;
+        got=act.questions.filter((q,qi)=>(r.answers[qi]||'').trim().toLowerCase()===q.answer.trim().toLowerCase()).length;
+      }
+      const pct = total>0?Math.round(got/total*100):0;
+      html += `<span class="pct-pill" style="background:${pct>=70?'var(--green-100)':pct>=40?'var(--amber-100)':'var(--red-100)'};color:${pct>=70?'var(--green-600)':pct>=40?'#856404':'var(--red-500)'}">${got}/${total} (${pct}%)</span></div>
+        <div class="activity-card-body">
+        <table class="result-detail-table"><thead><tr><th>#</th><th>Question</th><th>Réponse de l'élève</th><th>Correction</th><th></th></tr></thead><tbody>`;
+      if(act.type==='qcm'||act.type==='reading_qcm'||act.type==='listening_qcm') {
+        act.questions.forEach((q,qi)=>{
+          const givenIdx = r.answers?r.answers[qi]:null;
+          const given = givenIdx!==null&&givenIdx!==undefined?q.options[givenIdx]:'—';
+          const correct = q.options[q.correct];
+          const ok = givenIdx===q.correct;
+          html += `<tr><td>${qi+1}</td><td style="font-size:0.85rem">${q.question}</td><td style="font-size:0.85rem">${given}</td><td style="font-size:0.85rem;color:var(--green-600)">${correct}</td><td style="font-size:1.1rem">${ok?'<span class="check-ok">✓</span>':'<span class="check-fail">✗</span>'}</td></tr>`;
+        });
+      } else if(act.type==='fill') {
+        act.questions.forEach((q,qi)=>{
+          const given = r.answers?r.answers[qi]||'—':'—';
+          const ok = (given||'').trim().toLowerCase()===q.answer.trim().toLowerCase();
+          html += `<tr><td>${qi+1}</td><td style="font-size:0.85rem">${q.sentence}</td><td style="font-size:0.85rem">${given}</td><td style="font-size:0.85rem;color:var(--green-600)">${q.answer}</td><td style="font-size:1.1rem">${ok?'<span class="check-ok">✓</span>':'<span class="check-fail">✗</span>'}</td></tr>`;
+        });
+      }
+      html += `</tbody></table></div></div>`;
+    });
+  });
+  document.getElementById('student-detail-content').innerHTML = html;
+  document.getElementById('modal-student-detail').style.display='flex';
+}
+
+// --- TEACHER CATEGORY PANELS ---
+function renderTeacherCat(cat) {
+  const db = getDB();
+  const acts = db.activities[cat]||[];
+  const el = document.getElementById('t-'+cat);
+  const meta = CATS[cat];
+  let html = '';
+  acts.forEach((a,i)=>{
+    html += `<div class="section-card">
+      <div class="section-header">
+        <div class="section-title"><span class="section-icon">${meta.icon}</span>${a.title||'Exercice '+(i+1)}
+          <span class="chip">${typeLabel(a.type)}</span>
+        </div>
+        <div class="flex-row">
+          <button class="btn btn-sm btn-white" onclick="editActivity('${cat}',${i})">✏️ Modifier</button>
+          <button class="btn btn-sm btn-danger" onclick="deleteActivity('${cat}',${i})">🗑 Supprimer</button>
+        </div>
+      </div>
+      <div class="section-body" style="font-size:0.88rem;color:var(--gray-500)">${activityPreview(a)}</div>
+    </div>`;
+  });
+  html += `<div class="section-card" style="padding:1.5rem">
+    <div class="flex-row">
+      <button class="add-btn" style="flex:1" onclick="openAddActivity('${cat}')">+ Créer un exercice</button>
+      <button class="add-btn" style="flex:1;border-color:var(--green-500);color:var(--green-600);background:var(--green-100)" onclick="openImportJson('${cat}')">📥 Importer JSON (Claude)</button>
+    </div>
+    <details style="margin-top:1rem">
+      <summary style="cursor:pointer;font-size:0.85rem;color:var(--blue-500);font-weight:600">Voir le format JSON attendu pour cette catégorie</summary>
+      <pre style="margin-top:0.75rem">${escHtml(getJsonTemplate(cat))}</pre>
+    </details>
+  </div>`;
+  el.innerHTML = html;
+}
+
+function typeLabel(type) {
+  const m = { qcm:'QCM', fill:'Texte à trous', writing:'Expression libre', reading_qcm:'Texte + QCM', listening_qcm:'Vidéo + QCM' };
+  return m[type]||type;
+}
+
+function activityPreview(a) {
+  if(a.type==='writing') return `<em>${a.prompt||'(consigne vide)'}</em>`;
+  if(a.type==='reading_qcm') return `Texte : ${(a.text||'').substring(0,80)}… | ${(a.questions||[]).length} questions`;
+  if(a.type==='listening_qcm') return `Vidéo : ${a.videoId||a.videoUrl||'non renseignée'} | ${(a.questions||[]).length} questions`;
+  if(a.type==='qcm') return `${(a.questions||[]).length} question(s)`;
+  if(a.type==='fill') return `${(a.questions||[]).length} phrase(s) à compléter`;
+  return '';
+}
+
+// --- SETTINGS ---
+function renderTeacherSettings() {
+  const db = getDB();
+  const el = document.getElementById('t-settings');
+  el.innerHTML = `<div class="settings-grid">
+    <div class="section-card">
+      <div class="section-header"><div class="section-title">🔑 Code d'accès élèves</div></div>
+      <div class="section-body">
+        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;background:var(--blue-50);border-radius:var(--radius-sm);padding:1rem">
+          <span style="font-family:'Poppins',sans-serif;font-size:1.8rem;font-weight:700;color:var(--blue-600);letter-spacing:0.1em">${db.studentCode}</span>
+          <button class="btn btn-sm btn-white" onclick="copyCode()" title="Copier">📋 Copier</button>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Modifier le code manuellement</label>
+          <div style="display:flex;gap:0.75rem">
+            <input id="set-student-code" class="form-input" type="text" value="${db.studentCode}" style="flex:1">
+            <button class="btn btn-primary" onclick="saveStudentCode()">Enregistrer</button>
+          </div>
+          <div class="form-hint">Partagez ce code avec vos élèves. Changez-le périodiquement.</div>
+        </div>
+        <hr class="divider">
+        <div class="form-group">
+          <label class="form-label">Générer un nouveau code aléatoire</label>
+          <div class="flex-row">
+            <select id="code-format" class="form-select" style="max-width:200px">
+              <option value="alpha6">6 lettres majuscules</option>
+              <option value="num6">6 chiffres</option>
+              <option value="mixed8">8 caractères mixtes</option>
+              <option value="word">Mot anglais + 3 chiffres</option>
+            </select>
+            <button class="btn btn-success" onclick="generateCode()">🔄 Générer</button>
+          </div>
+          <div id="generated-code-preview" style="display:none;margin-top:0.75rem;padding:0.75rem;background:var(--green-100);border-radius:var(--radius-sm);color:var(--green-600);font-weight:700;font-size:1.1rem"></div>
+        </div>
+      </div>
+    </div>
+    <div class="section-card">
+      <div class="section-header"><div class="section-title">🔒 Mot de passe professeur</div></div>
+      <div class="section-body">
+        <div class="form-group">
+          <label class="form-label">Nouveau mot de passe</label>
+          <input id="set-teacher-pw" class="form-input" type="password" placeholder="Nouveau mot de passe">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirmer</label>
+          <input id="set-teacher-pw2" class="form-input" type="password" placeholder="Confirmation">
+        </div>
+        <div id="pw-alert" style="display:none" class="alert"></div>
+        <button class="btn btn-primary" onclick="saveTeacherPw()">Changer le mot de passe</button>
+      </div>
+    </div>
+    <div class="section-card">
+      <div class="section-header"><div class="section-title">🗑 Gestion des données</div></div>
+      <div class="section-body">
+        <button class="btn btn-danger" onclick="clearResults()">Effacer tous les résultats élèves</button>
+        <div class="form-hint" style="margin-top:0.5rem">Les exercices ne seront pas supprimés.</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function saveStudentCode() {
+  const db = getDB();
+  db.studentCode = document.getElementById('set-student-code').value.trim()||'english2025';
+  saveDB(db);
+  renderTeacherSettings();
+}
+function copyCode() {
+  const db = getDB();
+  navigator.clipboard.writeText(db.studentCode).then(()=>alert('Code copié : '+db.studentCode)).catch(()=>alert('Code : '+db.studentCode));
+}
+function generateCode() {
+  const format = (document.getElementById('code-format')||{}).value||'alpha6';
+  const words = ['SPRING','AUTUMN','OCEAN','MUSIC','BRAVE','HAPPY','GREEN','BLUE','LUCKY','SMART','SUNNY','STORM','EAGLE','FROST','LIGHT'];
+  let code = '';
+  if(format==='alpha6') {
+    for(let i=0;i<6;i++) code+=String.fromCharCode(65+Math.floor(Math.random()*26));
+  } else if(format==='num6') {
+    for(let i=0;i<6;i++) code+=Math.floor(Math.random()*10);
+  } else if(format==='mixed8') {
+    const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    for(let i=0;i<8;i++) code+=chars[Math.floor(Math.random()*chars.length)];
+  } else if(format==='word') {
+    code=words[Math.floor(Math.random()*words.length)]+Math.floor(Math.random()*900+100);
+  }
+  const preview = document.getElementById('generated-code-preview');
+  if(preview) {
+    preview.style.display='block';
+    preview.innerHTML=`Nouveau code : <span style="letter-spacing:0.12em">${code}</span> <button class="btn btn-sm btn-success" style="margin-left:1rem" onclick="applyGeneratedCode('${code}')">✅ Appliquer</button>`;
+  }
+}
+function applyGeneratedCode(code) {
+  const db = getDB();
+  db.studentCode = code;
+  saveDB(db);
+  renderTeacherSettings();
+}
+function saveTeacherPw() {
+  const pw = document.getElementById('set-teacher-pw').value;
+  const pw2 = document.getElementById('set-teacher-pw2').value;
+  const a = document.getElementById('pw-alert');
+  if(!pw||pw.length<4) { a.className='alert alert-danger'; a.textContent='Mot de passe trop court.'; a.style.display='block'; return; }
+  if(pw!==pw2) { a.className='alert alert-danger'; a.textContent='Les mots de passe ne correspondent pas.'; a.style.display='block'; return; }
+  const db = getDB();
+  db.teacherPassword = pw;
+  saveDB(db);
+  a.className='alert alert-success'; a.textContent='Mot de passe mis à jour.'; a.style.display='block';
+}
+function clearResults() {
+  if(!confirm('Confirmer la suppression de tous les résultats élèves ?')) return;
+  const db = getDB();
+  db.results = [];
+  saveDB(db);
+  renderTeacherResults();
+  alert('Résultats supprimés.');
+}
+
+// ===================== ADD/EDIT ACTIVITY =====================
+let _addCtx = { cat: null, idx: null };
+
+function openAddActivity(cat) {
+  _addCtx = { cat, idx: null };
+  const meta = CATS[cat];
+  document.getElementById('add-modal-title').textContent = '+ Ajouter un exercice – '+meta.label;
+  renderAddModal(cat, null);
+  document.getElementById('modal-add-activity').style.display='flex';
+}
+
+function editActivity(cat, idx) {
+  _addCtx = { cat, idx };
+  const db = getDB();
+  const act = db.activities[cat][idx];
+  document.getElementById('add-modal-title').textContent = '✏️ Modifier – '+act.title;
+  renderAddModal(cat, act);
+  document.getElementById('modal-add-activity').style.display='flex';
+}
+
+function deleteActivity(cat, idx) {
+  if(!confirm('Supprimer cet exercice ?')) return;
+  const db = getDB();
+  db.activities[cat].splice(idx,1);
+  saveDB(db);
+  renderTeacherCat(cat);
+}
+
+function renderAddModal(cat, act) {
+  const types = {
+    reading: [{v:'reading_qcm',l:'Texte + QCM'},{v:'qcm',l:'QCM simple'}],
+    writing: [{v:'writing',l:'Expression libre'}],
+    listening: [{v:'listening_qcm',l:'Vidéo + QCM'}],
+    grammar: [{v:'qcm',l:'QCM'},{v:'fill',l:'Texte à trous'}],
+    vocab: [{v:'qcm',l:'QCM'},{v:'fill',l:'Texte à trous'}]
+  };
+  const typeOpts = types[cat]||[{v:'qcm',l:'QCM'}];
+  const selType = act?act.type:typeOpts[0].v;
+  let html = `<div class="form-group">
+    <label class="form-label">Titre de l'exercice</label>
+    <input id="am-title" class="form-input" type="text" value="${escHtml(act?act.title||'':'')}">
+  </div>
+  <div class="form-group">
+    <label class="form-label">Type</label>
+    <select id="am-type" class="form-select" onchange="renderAddModal('${cat}', getFormAct())">
+      ${typeOpts.map(t=>`<option value="${t.v}"${selType===t.v?' selected':''}>${t.l}</option>`).join('')}
+    </select>
+  </div>
+  <div id="am-body">${renderTypeForm(selType, act)}</div>
+  <div class="flex-row" style="margin-top:1.5rem">
+    <button class="btn btn-primary" onclick="saveActivity()" style="flex:1">Enregistrer</button>
+    <button class="btn btn-white" onclick="closeModal('modal-add-activity')">Annuler</button>
+  </div>`;
+  document.getElementById('add-modal-body').innerHTML = html;
+}
+
+function renderTypeForm(type, act) {
+  if(type==='qcm') return renderQcmForm(act);
+  if(type==='fill') return renderFillForm(act);
+  if(type==='writing') return renderWritingForm(act);
+  if(type==='reading_qcm') return renderReadingQcmForm(act);
+  if(type==='listening_qcm') return renderListeningQcmForm(act);
+  return '';
+}
+
+function renderQcmForm(act) {
+  const qs = act&&act.questions?act.questions:[{question:'',options:['','','',''],correct:0}];
+  let html = `<div class="form-group"><label class="form-label">Consigne (optionnelle)</label>
+    <input id="qcm-instructions" class="form-input" type="text" value="${escHtml(act?act.instructions||'':'')}"></div>
+    <div id="qcm-questions">`;
+  qs.forEach((q,qi)=>{ html += renderQcmQuestionRow(q,qi); });
+  html += `</div><button type="button" class="add-btn" onclick="addQcmQuestion()" style="margin-top:0.75rem">+ Ajouter une question</button>`;
+  return html;
+}
+
+function renderQcmQuestionRow(q,qi) {
+  let html = `<div class="activity-card" id="qrow_${qi}" style="margin-bottom:0.75rem">
+    <div class="activity-card-header"><span class="activity-card-title">Question ${qi+1}</span>
+      <button type="button" class="btn btn-sm btn-danger" onclick="removeQcmQuestion(${qi})">🗑</button></div>
+    <div class="activity-card-body">
+      <div class="form-group"><label class="form-label">Question</label>
+        <input class="form-input" id="qq_${qi}" type="text" value="${escHtml(q.question||'')}"></div>
+      <div class="form-label" style="margin-bottom:0.4rem">Options (cochez la bonne réponse)</div>`;
+  (q.options||['','','','']).forEach((opt,oi)=>{
+    html += `<div class="option-row">
+      <input type="radio" name="correct_${qi}" id="cr_${qi}_${oi}" value="${oi}" ${q.correct===oi?'checked':''}>
+      <input type="text" class="form-input" id="qo_${qi}_${oi}" value="${escHtml(opt||'')}" placeholder="Option ${oi+1}">
+      <button type="button" class="btn-icon danger" onclick="removeQcmOption(${qi},${oi})">🗑</button></div>`;
+  });
+  html += `<button type="button" class="add-btn" style="margin-top:0.4rem" onclick="addQcmOption(${qi})">+ Option</button></div></div>`;
+  return html;
+}
+
+function addQcmQuestion() {
+  const qs = collectQcmQuestions();
+  qs.push({question:'',options:['','','',''],correct:0});
+  document.getElementById('qcm-questions').innerHTML = qs.map((q,qi)=>renderQcmQuestionRow(q,qi)).join('');
+}
+function removeQcmQuestion(qi) {
+  let qs = collectQcmQuestions();
+  if(qs.length<=1) return;
+  qs.splice(qi,1);
+  document.getElementById('qcm-questions').innerHTML = qs.map((q,i)=>renderQcmQuestionRow(q,i)).join('');
+}
+function addQcmOption(qi) {
+  let qs = collectQcmQuestions();
+  if(!qs[qi]) return;
+  qs[qi].options.push('');
+  document.getElementById('qcm-questions').innerHTML = qs.map((q,i)=>renderQcmQuestionRow(q,i)).join('');
+}
+function removeQcmOption(qi,oi) {
+  let qs = collectQcmQuestions();
+  if(!qs[qi]||qs[qi].options.length<=2) return;
+  qs[qi].options.splice(oi,1);
+  if(qs[qi].correct>=qs[qi].options.length) qs[qi].correct=0;
+  document.getElementById('qcm-questions').innerHTML = qs.map((q,i)=>renderQcmQuestionRow(q,i)).join('');
+}
+
+function collectQcmQuestions() {
+  const container = document.getElementById('qcm-questions');
+  if(!container) return [];
+  const rows = container.querySelectorAll('[id^="qrow_"]');
+  const qs = [];
+  rows.forEach((row,qi)=>{
+    const question = (document.getElementById('qq_'+qi)||{}).value||'';
+    const opts = [];
+    let oi=0;
+    while(document.getElementById('qo_'+qi+'_'+oi)) {
+      opts.push((document.getElementById('qo_'+qi+'_'+oi)||{}).value||'');
+      oi++;
+    }
+    const radios = row.querySelectorAll(`input[name="correct_${qi}"]`);
+    let correct=0;
+    radios.forEach(r=>{ if(r.checked) correct=parseInt(r.value); });
+    qs.push({question,options:opts,correct});
+  });
+  return qs;
+}
+
+function renderFillForm(act) {
+  const qs = act&&act.questions?act.questions:[{sentence:'',answer:''}];
+  let html = `<div class="form-group"><label class="form-label">Consigne (optionnelle)</label>
+    <input id="fill-instructions" class="form-input" type="text" value="${escHtml(act?act.instructions||'':'')}"></div>
+    <div class="form-hint" style="margin-bottom:0.75rem">Utilisez <code>___</code> pour indiquer l'emplacement de la réponse.</div>
+    <div id="fill-questions">`;
+  qs.forEach((q,qi)=>{ html += renderFillRow(q,qi); });
+  html += `</div><button type="button" class="add-btn" onclick="addFillRow()">+ Ajouter une phrase</button>`;
+  return html;
+}
+function renderFillRow(q,qi) {
+  return `<div class="activity-card" style="margin-bottom:0.5rem" id="frow_${qi}">
+    <div class="activity-card-body">
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Phrase (avec ___)</label>
+          <input class="form-input" id="fs_${qi}" type="text" value="${escHtml(q.sentence||'')}" placeholder="He ___ to school every day."></div>
+        <div class="form-group" style="max-width:140px"><label class="form-label">Réponse</label>
+          <input class="form-input" id="fa_${qi}" type="text" value="${escHtml(q.answer||'')}"></div>
+        <button type="button" class="btn-icon danger" style="margin-top:1.4rem" onclick="removeFillRow(${qi})">🗑</button>
+      </div>
+    </div>
+  </div>`;
+}
+function addFillRow() {
+  const qs = collectFillQuestions();
+  qs.push({sentence:'',answer:''});
+  document.getElementById('fill-questions').innerHTML = qs.map((q,i)=>renderFillRow(q,i)).join('');
+}
+function removeFillRow(qi) {
+  let qs = collectFillQuestions();
+  if(qs.length<=1) return;
+  qs.splice(qi,1);
+  document.getElementById('fill-questions').innerHTML = qs.map((q,i)=>renderFillRow(q,i)).join('');
+}
+function collectFillQuestions() {
+  const qs=[];
+  let qi=0;
+  while(document.getElementById('fs_'+qi)) {
+    qs.push({sentence:(document.getElementById('fs_'+qi)||{}).value||'',answer:(document.getElementById('fa_'+qi)||{}).value||''});
+    qi++;
+  }
+  return qs;
+}
+
+function renderWritingForm(act) {
+  return `<div class="form-group"><label class="form-label">Sujet / Consigne</label>
+    <textarea id="writing-prompt" class="form-textarea" rows="4" placeholder="Describe your ideal school...">${escHtml(act?act.prompt||'':'')}</textarea></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Mots min.</label>
+        <input id="writing-min" class="form-input" type="number" min="0" value="${act?act.wordMin||'':''}"></div>
+      <div class="form-group"><label class="form-label">Mots max.</label>
+        <input id="writing-max" class="form-input" type="number" min="0" value="${act?act.wordMax||'':''}"></div>
+    </div>`;
+}
+
+function renderReadingQcmForm(act) {
+  const qs = act&&act.questions?act.questions:[{question:'',options:['','','',''],correct:0}];
+  let html = `<div class="form-group"><label class="form-label">Texte</label>
+    <textarea id="reading-text" class="form-textarea" rows="6" placeholder="Copiez le texte ici...">${escHtml(act?act.text||'':'')}</textarea></div>
+    <div class="form-group"><label class="form-label">Consigne</label>
+    <input id="reading-instructions" class="form-input" type="text" value="${escHtml(act?act.instructions||'':'')}"></div>
+    <div id="qcm-questions">`;
+  qs.forEach((q,qi)=>{ html += renderQcmQuestionRow(q,qi); });
+  html += `</div><button type="button" class="add-btn" onclick="addQcmQuestion()">+ Ajouter une question</button>`;
+  return html;
+}
+
+function renderListeningQcmForm(act) {
+  const qs = act&&act.questions?act.questions:[{question:'',options:['','','',''],correct:0}];
+  const vtype = act?act.videoType||'youtube':'youtube';
+  let html = `<div class="form-group"><label class="form-label">Type de vidéo</label>
+    <select id="vid-type" class="form-select" onchange="toggleVideoFields()">
+      <option value="youtube"${vtype==='youtube'?' selected':''}>YouTube (ID)</option>
+      <option value="url"${vtype==='url'?' selected':''}>URL directe (mp4)</option>
+    </select></div>
+    <div id="vid-yt" style="display:${vtype==='youtube'?'block':'none'}">
+      <div class="form-group"><label class="form-label">ID YouTube</label>
+        <input id="vid-ytid" class="form-input" type="text" value="${escHtml(act?act.videoId||'':'')}" placeholder="Ex: dQw4w9WgXcQ">
+        <div class="form-hint">L'ID est la partie après <code>?v=</code> dans l'URL YouTube.</div></div></div>
+    <div id="vid-url" style="display:${vtype==='url'?'block':'none'}">
+      <div class="form-group"><label class="form-label">URL de la vidéo</label>
+        <input id="vid-urlval" class="form-input" type="text" value="${escHtml(act?act.videoUrl||'':'')}" placeholder="https://..."></div></div>
+    <div class="form-group"><label class="form-label">Consigne</label>
+    <input id="listening-instructions" class="form-input" type="text" value="${escHtml(act?act.instructions||'':'')}"></div>
+    <div id="qcm-questions">`;
+  qs.forEach((q,qi)=>{ html += renderQcmQuestionRow(q,qi); });
+  html += `</div><button type="button" class="add-btn" onclick="addQcmQuestion()">+ Ajouter une question</button>`;
+  return html;
+}
+
+function toggleVideoFields() {
+  const t = (document.getElementById('vid-type')||{}).value||'youtube';
+  document.getElementById('vid-yt').style.display=t==='youtube'?'block':'none';
+  document.getElementById('vid-url').style.display=t==='url'?'block':'none';
+}
+
+function getFormAct() {
+  return null; // used to refresh form without existing act
+}
+
+function saveActivity() {
+  const { cat, idx } = _addCtx;
+  const type = (document.getElementById('am-type')||{}).value;
+  const title = (document.getElementById('am-title')||{}).value||'Exercice';
+  let act = { type, title };
+  if(type==='qcm') {
+    act.instructions = (document.getElementById('qcm-instructions')||{}).value||'';
+    act.questions = collectQcmQuestions();
+  } else if(type==='fill') {
+    act.instructions = (document.getElementById('fill-instructions')||{}).value||'';
+    act.questions = collectFillQuestions();
+  } else if(type==='writing') {
+    act.prompt = (document.getElementById('writing-prompt')||{}).value||'';
+    act.wordMin = parseInt((document.getElementById('writing-min')||{}).value||0)||null;
+    act.wordMax = parseInt((document.getElementById('writing-max')||{}).value||0)||null;
+  } else if(type==='reading_qcm') {
+    act.text = (document.getElementById('reading-text')||{}).value||'';
+    act.instructions = (document.getElementById('reading-instructions')||{}).value||'';
+    act.questions = collectQcmQuestions();
+  } else if(type==='listening_qcm') {
+    act.videoType = (document.getElementById('vid-type')||{}).value||'youtube';
+    act.videoId = (document.getElementById('vid-ytid')||{}).value||'';
+    act.videoUrl = (document.getElementById('vid-urlval')||{}).value||'';
+    act.instructions = (document.getElementById('listening-instructions')||{}).value||'';
+    act.questions = collectQcmQuestions();
+  }
+  const db = getDB();
+  if(!db.activities[cat]) db.activities[cat]=[];
+  if(idx!==null) db.activities[cat][idx]=act;
+  else db.activities[cat].push(act);
+  saveDB(db);
+  closeModal('modal-add-activity');
+  renderTeacherCat(cat);
+}
+
+// ===================== JSON IMPORT =====================
+let _importCat = null;
+
+function openImportJson(cat) {
+  _importCat = cat;
+  document.getElementById('json-import-area').value='';
+  document.getElementById('json-import-error').style.display='none';
+  document.getElementById('modal-import-json').style.display='flex';
+}
+
+function doImportJson() {
+  const raw = document.getElementById('json-import-area').value.trim();
+  const errEl = document.getElementById('json-import-error');
+  try {
+    let data = JSON.parse(raw);
+    if(!Array.isArray(data)) data = [data];
+    const db = getDB();
+    if(!db.activities[_importCat]) db.activities[_importCat]=[];
+    data.forEach(act=>db.activities[_importCat].push(act));
+    saveDB(db);
+    closeModal('modal-import-json');
+    renderTeacherCat(_importCat);
+  } catch(e) {
+    errEl.textContent = 'JSON invalide : '+e.message;
+    errEl.style.display='block';
+  }
+}
+
+function getJsonTemplate(cat) {
+  const tpls = {
+    reading: `[
+  {
+    "type": "reading_qcm",
+    "title": "Titre de l'exercice",
+    "text": "Texte de lecture...",
+    "instructions": "Answer the following questions.",
+    "questions": [
+      { "question": "What is the main topic?", "options": ["A","B","C","D"], "correct": 0 }
+    ]
+  }
+]`,
+    writing: `[
+  {
+    "type": "writing",
+    "title": "Titre",
+    "prompt": "Describe your ideal school in 80-100 words.",
+    "wordMin": 80, "wordMax": 100
+  }
+]`,
+    listening: `[
+  {
+    "type": "listening_qcm",
+    "title": "Titre",
+    "videoType": "youtube",
+    "videoId": "ID_YOUTUBE",
+    "instructions": "Watch and answer.",
+    "questions": [
+      { "question": "What does the speaker say?", "options": ["A","B","C","D"], "correct": 1 }
+    ]
+  }
+]`,
+    grammar: `[
+  {
+    "type": "qcm",
+    "title": "Titre",
+    "instructions": "Choose the correct form.",
+    "questions": [
+      { "question": "She ___ happy.", "options": ["is","are","am","be"], "correct": 0 }
+    ]
+  },
+  {
+    "type": "fill",
+    "title": "Titre",
+    "instructions": "Fill in the blanks.",
+    "questions": [
+      { "sentence": "He ___ to school every day.", "answer": "goes" }
+    ]
+  }
+]`,
+    vocab: `[
+  {
+    "type": "qcm",
+    "title": "Titre",
+    "instructions": "Choose the correct word.",
+    "questions": [
+      { "question": "A synonym for 'happy' is:", "options": ["sad","joyful","angry","tired"], "correct": 1 }
+    ]
+  }
+]`
+  };
+  return tpls[cat]||'[]';
+}
+
+// ===================== HELPERS =====================
+function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ===================== INIT =====================
+document.getElementById('page-home').style.display='flex';
+['page-student','page-teacher'].forEach(p=>document.getElementById(p).classList.remove('active'));
+</script>
+</body>
+</html>
