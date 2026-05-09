@@ -580,15 +580,53 @@ function renderStudentWriting(cat, act, idx, res) {
   const submitted = res && res.submitted;
   let html = '';
   if(act.prompt) html += `<div class="text-passage" style="background:var(--blue-50);border-color:var(--blue-100)">${act.prompt}</div>`;
-  if(act.wordMin||act.wordMax) html += `<p style="font-size:0.82rem;color:var(--gray-500);margin-bottom:0.75rem">Nombre de mots recommandé : ${act.wordMin||''}${act.wordMax?'–'+act.wordMax:''}</p>`;
+  const target = act.wordMin||act.wordMax ? `Objectif : ${act.wordMin||''}${act.wordMax?'–'+act.wordMax:''} mots` : '';
   if(submitted) {
+    const wc = countWords(res.answers[0]||'');
     html += `<div class="text-passage">${escHtml(res.answers[0]||'').replace(/\n/g,'<br>')}</div>
-    <span class="submitted-tag">✅ Texte envoyé au professeur</span>`;
+    <div style="display:flex;align-items:center;gap:1rem;margin-top:0.5rem;flex-wrap:wrap">
+      <span class="submitted-tag">✅ Texte envoyé au professeur</span>
+      <span style="font-size:0.85rem;color:var(--gray-500)">📝 ${wc} mot${wc>1?'s':''} ${target?'· '+target:''}</span>
+    </div>`;
   } else {
-    html += `<textarea class="form-textarea" id="writing_${cat}_${idx}" rows="8" placeholder="Rédigez votre réponse ici...">${escHtml(res&&res.answers?res.answers[0]||'':'')}</textarea>
-    <button class="btn btn-primary" style="margin-top:0.75rem" onclick="submitActivity('${cat}',${idx},'writing')">Envoyer</button>`;
+    const initVal = res&&res.answers?res.answers[0]||'':'';
+    const initWc = countWords(initVal);
+    const wcColor = getWcColor(initWc, act.wordMin, act.wordMax);
+    html += `<div style="position:relative">
+      <textarea class="form-textarea" id="writing_${cat}_${idx}" rows="8" placeholder="Rédigez votre réponse ici..." oninput="updateWordCount('${cat}',${idx},this)">${escHtml(initVal)}</textarea>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:0.5rem;flex-wrap:wrap;gap:0.5rem">
+      <div style="display:flex;align-items:center;gap:0.75rem">
+        <span id="wc_${cat}_${idx}" style="font-size:0.88rem;font-weight:700;color:${wcColor};background:${wcColor==='var(--green-600)'?'var(--green-100)':wcColor==='var(--red-500)'?'var(--red-100)':'var(--gray-100)'};padding:0.25rem 0.65rem;border-radius:99px">📝 ${initWc} mot${initWc>1?'s':''}</span>
+        ${target?`<span style="font-size:0.82rem;color:var(--gray-500)">${target}</span>`:''}
+      </div>
+      <button class="btn btn-primary" onclick="submitActivity('${cat}',${idx},'writing')">Envoyer</button>
+    </div>`;
   }
   return html;
+}
+
+function countWords(text) {
+  return (text||'').trim().split(/\s+/).filter(w=>w.length>0).length;
+}
+
+function getWcColor(wc, min, max) {
+  if(!min && !max) return 'var(--gray-700)';
+  if(min && wc < min) return 'var(--red-500)';
+  if(max && wc > max) return 'var(--red-500)';
+  return 'var(--green-600)';
+}
+
+function updateWordCount(cat, idx, ta) {
+  const act = getDB().activities[cat][idx];
+  const wc = countWords(ta.value);
+  const span = document.getElementById('wc_'+cat+'_'+idx);
+  if(!span) return;
+  const col = getWcColor(wc, act.wordMin, act.wordMax);
+  const bg = col==='var(--green-600)'?'var(--green-100)':col==='var(--red-500)'?'var(--red-100)':'var(--gray-100)';
+  span.style.color = col;
+  span.style.background = bg;
+  span.textContent = '📝 '+wc+' mot'+(wc>1?'s':'');
 }
 
 function renderStudentReadingQcm(cat, act, idx, res) {
@@ -865,14 +903,23 @@ function renderTeacherResults() {
         </td>`;
       });
 
-      html += `<td style="padding:0.55rem 0.5rem;text-align:center;">
+      html += `<td style="padding:0.55rem 0.5rem;text-align:center;white-space:nowrap;">
         <button class="btn btn-sm btn-white" style="font-size:0.78rem;padding:0.2rem 0.6rem" onclick="showStudentDetail('${escHtml(s.id)}')">Détail ›</button>
+        <button class="btn btn-sm btn-danger" style="font-size:0.78rem;padding:0.2rem 0.5rem;margin-left:4px" title="Supprimer cet élève" onclick="deleteStudentRow('${escHtml(s.id)}','${escHtml(s.name+' '+s.init+'.')}')">🗑</button>
       </td></tr>`;
     });
   });
 
   html += `</tbody></table></div></div>`;
   el.innerHTML = html;
+}
+
+function deleteStudentRow(studentId, studentLabel) {
+  if(!confirm('Supprimer tous les résultats de ' + studentLabel + ' ?')) return;
+  const db = getDB();
+  db.results = (db.results||[]).filter(r => r.studentId !== studentId);
+  saveDB(db);
+  renderTeacherResults();
 }
 
 function computeStudentAvg(db, student) {
